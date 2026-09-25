@@ -1,12 +1,23 @@
 ﻿using SupportIssue.Domain;
+using SupportIssue.Infrastructure;
+using static SupportIssue.Domain.Ticket;
 
 namespace SupportIssue.Application.Methods;
 
-public class TicketHandlingService : ITicketHandlingService
+public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepository) : ITicketHandlingService
 {
     public Task<Ticket> AddCommentToTicket(Guid ticketId, string comment)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var addedComment = ticketHandlingRepository.AddCommentToTicketAsync(ticketId, comment);
+            return addedComment;
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("An error occurred while adding the comment to the ticket.", ex);
+            { }
+        }
     }
 
     public Task<Ticket> AssignTechnician(Guid ticketId, Guid technicianId)
@@ -14,12 +25,12 @@ public class TicketHandlingService : ITicketHandlingService
         throw new NotImplementedException();
     }
 
-    public Task<Ticket> ChangePriority(Guid ticketId, string newPriority)
+    public Task<Ticket> ChangePriority(Guid ticketId, TicketPriority newPriority)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Ticket> ChangeTicketStatus(Guid ticketId, string newStatus)
+    public Task<Ticket> ChangeTicketStatus(Guid ticketId, TicketStatus newStatus)
     {
         throw new NotImplementedException();
     }
@@ -31,15 +42,23 @@ public class TicketHandlingService : ITicketHandlingService
 
     public Task<IEnumerable<TicketComment>> GetCommentsByTicketId(Guid ticketId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var comments = ticketHandlingRepository.GetCommentsByTicketIdAsync(ticketId);
+            return comments;
+        }
+        catch (Exception ex)
+        {
+            throw new ApplicationException("An error occurred while retrieving the comments.", ex);
+        }
     }
 
     public async Task<Ticket> GetTicketById(Guid ticketId)
     {
         try
         {
-            await GetTicketById(ticketId);
-            return Ticket;
+            var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+            return ticket;
         }
         catch (Exception ex)
         {

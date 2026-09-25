@@ -6,4 +6,5 @@ public interface ITicketHandlingRepository
 {
     Task<Ticket> GetTicketByIdAsync(Guid ticketId);
     Task<IEnumerable<TicketComment>> GetCommentsByTicketIdAsync(Guid ticketId);
+    Task<Ticket> AddCommentToTicketAsync(Guid ticketId, string comment);
 }
