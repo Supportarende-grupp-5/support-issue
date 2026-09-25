@@ -7,8 +7,8 @@ public class SupportTicket
     public Guid Id { get; private set; }
     public Guid CustomerId { get; private set; }
 
-    public string? Title { get; private set; }
-    public string? Description { get; private set; }
+    public string Title { get; private set; }
+    public string Description { get; private set; }
 
     public TicketPriority Priority { get; private set; }
     public TicketStatus Status { get; private set; }
@@ -24,22 +24,22 @@ public class SupportTicket
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            throw new ArgumentException("Rubrik måste vara ifylld.");
+            throw new ArgumentException("Title is required.");
         }
 
         if (string.IsNullOrWhiteSpace(description))
         {
-            throw new ArgumentException("Beskrivning måste vara ifylld.");
+            throw new ArgumentException("Description is required.");
         }
 
         if (customerId == Guid.Empty)
         {
-            throw new ArgumentException("En kund måste väljas.");
+            throw new ArgumentException("A customer must be selected.");
         }
 
         if (!Enum.IsDefined(Priority))
         {
-            throw new ArgumentException("Ogiltig prioritet.");
+            throw new ArgumentException("Invalid priority.");
         }
 
         Id = Guid.NewGuid();
@@ -49,7 +49,7 @@ public class SupportTicket
         Title = title.Trim();
         Description = description.Trim();
         CustomerId = customerId;
-        Priority = Priority;
+        Priority = ticketPriority;
     }
 
 }
