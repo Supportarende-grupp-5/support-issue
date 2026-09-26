@@ -7,11 +7,10 @@ namespace SupportIssue.Application.Methods;
 public interface ITicketHandlingService
 {
     public Task<Ticket> GetTicketById(Guid ticketId);
-    public Task<Ticket> EditTicket(Guid ticketId, string ticketTitle, string ticketDescription);
-    public Task<Ticket> AssignTechnician(Guid ticketId, Guid technicianId);
-    public Task<Ticket> ChangeTicketStatus(Guid ticketId, TicketStatus newStatus);
-    public Task<Ticket> AddCommentToTicket(Guid ticketId, string comment);
-    public Task<Ticket> ChangePriority(Guid ticketId, TicketPriority newPriority);
-    public Task<IEnumerable<TicketComment>> GetCommentsByTicketId(Guid ticketId);
+    public Task<bool> AssignTechnician(Ticket ticket, int technicianId);
+    public Task<Ticket> ChangeTicketStatus(Ticket ticket, TicketStatus newStatus);
+    public Task<bool> AddCommentToTicket(Ticket ticket, string comment);
+    public Task<Ticket> ChangeTicketPriority(Ticket ticket, TicketPriority newPriority);
+    public Task<List<TicketComment>> GetCommentsByTicket(Ticket ticket);
 
 }
