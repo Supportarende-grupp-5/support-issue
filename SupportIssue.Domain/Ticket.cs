@@ -6,6 +6,7 @@ public class Ticket
     public string TicketTitle { get; set; } =string.Empty;
     public Guid CustomerId { get; set; }
     public string TicketDescription { get; set; } = string.Empty;
+    public int? TechnicianId { get; set; }
     public enum TicketStatus
     {
         New,
@@ -18,4 +19,7 @@ public class Ticket
         Medium,
         High
     }
+    public TicketStatus Status { get; set; } = TicketStatus.New;
+    public TicketPriority Priority { get; set; } = TicketPriority.Low;
+
 }
