@@ -47,9 +47,10 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
         }
     }
 
-    public async Task<SupportTicket> ChangeTicketPriority(SupportTicket ticket, TicketPriority newPriority)
+    public async Task<bool> ChangeTicketPriority(SupportTicket ticket, TicketPriority newPriority)
     {
-        throw new NotImplementedException();
+        ticket.UpdatePriority(newPriority);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
 
     }
 

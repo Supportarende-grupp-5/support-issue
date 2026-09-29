@@ -15,6 +15,7 @@ public partial class SupportTicket
 
     public DateTimeOffset CreatedAt { get; private set; }
     public Technician? AssignedTechnician { get; private set; }
+    public TicketComment? Comment { get; private set; }
 
     public SupportTicket(
 
