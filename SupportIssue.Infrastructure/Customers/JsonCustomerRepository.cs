@@ -20,18 +20,38 @@ public class JsonCustomerRepository : ICustomerRepository
             return new List<Customer>();
         }
 
-        string json = File.ReadAllText(_filePath);
+        try
+        {
+            string json = File.ReadAllText(_filePath);
 
-        List<Customer>? customers =
-            JsonSerializer.Deserialize<List<Customer>>(json);
 
-        return customers ?? new List<Customer>();
+            List<Customer>? customers =
+                JsonSerializer.Deserialize<List<Customer>>(json);
+
+            return customers ?? new List<Customer>();
+        }
+        catch (JsonException)
+        {
+            throw new InvalidOperationException("Filen innehåller ogiltig Json");
+        }
+        catch (IOException)
+        {
+            throw new InvalidOperationException("Filen kunde inte läsas");
+        }
+
     }
 
     private void SaveCustomers(List<Customer> customers)
     {
-        string json = JsonSerializer.Serialize(customers);
-        File.WriteAllText(_filePath, json);
+        try
+        {
+            string json = JsonSerializer.Serialize(customers);
+            File.WriteAllText(_filePath, json);
+        }
+        catch (IOException)
+        {
+            throw new InvalidOperationException("Filen kunde inte sparas");
+        }
     }
 
     public void Add(Customer customer)
