@@ -1,5 +1,5 @@
 ﻿using SupportIssue.Application.Methods;
-using SupportIssue.Domain;
+using SupportIssue.Domain.Entities;
 using System.Text.Json;
 using static SupportIssue.Domain.Ticket;
 

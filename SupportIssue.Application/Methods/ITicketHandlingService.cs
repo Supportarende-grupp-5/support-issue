@@ -1,5 +1,4 @@
-﻿
-using SupportIssue.Domain;
+﻿using SupportIssue.Domain.Entities;
 using static SupportIssue.Domain.Ticket;
 
 namespace SupportIssue.Application.Methods;

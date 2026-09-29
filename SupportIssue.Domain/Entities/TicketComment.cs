@@ -1,4 +1,4 @@
-﻿namespace SupportIssue.Domain;
+﻿namespace SupportIssue.Domain.Entities;
 
 public class TicketComment
 {
