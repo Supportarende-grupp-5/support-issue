@@ -1,6 +1,4 @@
 ﻿using SupportIssue.Domain;
-using SupportIssue.Infrastructure;
-using System.Xml.Linq;
 using static SupportIssue.Domain.Ticket;
 
 namespace SupportIssue.Application.Methods;

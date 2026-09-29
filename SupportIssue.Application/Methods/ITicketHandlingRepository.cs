@@ -1,7 +1,7 @@
 ﻿using SupportIssue.Domain;
 using static SupportIssue.Domain.Ticket;
 
-namespace SupportIssue.Infrastructure;
+namespace SupportIssue.Application.Methods;
 
 public interface ITicketHandlingRepository
 {
