@@ -6,17 +6,11 @@ namespace SupportIssue.Application.Methods;
 
 public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepository) : ITicketHandlingService
 {
-    public async Task<bool> AddCommentToTicket(SupportTicket ticket, string comment)
+    public async Task<bool> AddCommentToTicket(SupportTicket ticket, string commentText)
     {
-        try
-        {
-            await ticketHandlingRepository.AddCommentToTicketAsync(ticket, comment);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("An error occurred while adding the comment to the ticket.", ex);
-        }
+            ticket.AddComment(commentText);
+            return await ticketHandlingRepository.SaveTicketAsync(ticket);
+
     }
 
     public async Task<bool> AssignTechnician(SupportTicket ticket, int technicianId)

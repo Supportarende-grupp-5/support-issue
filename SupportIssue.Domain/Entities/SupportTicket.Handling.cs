@@ -50,4 +50,9 @@ public partial class SupportTicket
 
         }
     }
+    public void AddComment(string commentText)
+    {
+        TicketComment comment = new TicketComment(this.Id, commentText);
+        Comments.Add(comment);
+    }
 }

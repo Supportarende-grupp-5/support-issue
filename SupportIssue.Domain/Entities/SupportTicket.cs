@@ -15,7 +15,7 @@ public partial class SupportTicket
 
     public DateTimeOffset CreatedAt { get; private set; }
     public Technician? AssignedTechnician { get; private set; }
-    public TicketComment? Comment { get; private set; }
+    public List<TicketComment> Comments { get; private set; }
 
     public SupportTicket(
 
@@ -52,6 +52,7 @@ public partial class SupportTicket
         Description = description.Trim();
         CustomerId = customerId;
         Priority = ticketPriority;
+        Comments = new List<TicketComment>();
     }
 
 }

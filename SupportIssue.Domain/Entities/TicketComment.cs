@@ -9,6 +9,10 @@ public class TicketComment
     
     public TicketComment(Guid ticketId, string comment)
     {
+        if (string.IsNullOrWhiteSpace(comment))
+        {
+            throw new ArgumentNullException(nameof(comment));
+        }
         Id = Guid.NewGuid();
         TicketId = ticketId;
         Comment = comment;
