@@ -5,11 +5,21 @@ public class Technician
     public string? TechnicianName { get; set; }
     public int TechnicianId { get; set; }
 
-    List<Technician> technicianList = new()
-{
-    new Technician { TechnicianId = 1, TechnicianName = "Anna" },
-    new Technician { TechnicianId = 2, TechnicianName = "Erik" },
-    new Technician { TechnicianId = 3, TechnicianName = "Sara" },
-    new Technician { TechnicianId = 4, TechnicianName = "Johan" }
-};
+    public Technician(string name, int id)
+    {
+        TechnicianName = name;
+        TechnicianId = id;
+    }
+    public static List<Technician> CreateTechnicianList()
+    {
+        var list = new List<Technician>
+        {
+            new Technician ("Anna",1),
+            new Technician ("Johan",2),
+            new Technician ("Sara", 3),
+            new Technician ("Erik", 4)
+        }; 
+        return list;
+    }
 }
+
