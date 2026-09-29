@@ -6,8 +6,7 @@ namespace SupportIssue.Application.Methods;
 public interface ITicketHandlingRepository
 {
     Task<SupportTicket> GetTicketByIdAsync(Guid ticketId);
-    Task<List<TicketComment>> GetCommentsByTicketAsync(SupportTicket ticket);
     Task<bool> AddCommentToTicketAsync(SupportTicket ticket, string comment);
-    Task<List<SupportTicket>> GetAllTickets();
+    Task<List<SupportTicket>> GetAllTicketsAsync();
     Task<bool> SaveTicketAsync(SupportTicket ticket);
 }

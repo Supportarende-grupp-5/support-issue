@@ -54,17 +54,9 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
         return await ticketHandlingRepository.SaveTicketAsync(ticket);
     }
 
-    public Task<List<TicketComment>> GetCommentsByTicket(SupportTicket ticket)
-    {
-        try
-        {
-            var comments = ticketHandlingRepository.GetCommentsByTicketAsync(ticket);
-            return comments;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("An error occurred while retrieving the comments.", ex);
-        }
+    public List<TicketComment> GetCommentsByTicket(SupportTicket ticket)
+    {            
+            return ticket.Comments.OrderBy(x => x.CreatedAt).ToList(); 
     }
 
     public async Task<SupportTicket> GetTicketById(Guid ticketId)

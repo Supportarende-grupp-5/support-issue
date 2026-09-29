@@ -10,6 +10,6 @@ public interface ITicketHandlingService
     public Task<bool> ChangeTicketStatus(SupportTicket ticket, TicketStatus newStatus);
     public Task<bool> AddCommentToTicket(SupportTicket ticket, string comment);
     public Task<bool> ChangeTicketPriority(SupportTicket ticket, TicketPriority newPriority);
-    public Task<List<TicketComment>> GetCommentsByTicket(SupportTicket ticket);
+    public List<TicketComment> GetCommentsByTicket(SupportTicket ticket);
 
 }

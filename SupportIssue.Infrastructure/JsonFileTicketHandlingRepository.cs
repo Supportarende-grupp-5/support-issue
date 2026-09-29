@@ -42,11 +42,11 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
             return ticket;
         }
     }
-    public async Task<List<SupportTicket>> GetAllTickets()
+    public async Task<List<SupportTicket>> GetAllTicketsAsync()
         {
         if (!File.Exists(_ticketfilePath))
         {
-            throw new FileNotFoundException("The ticket comment file was not found.", _ticketfilePath);
+            throw new FileNotFoundException("The ticket file was not found.", _ticketfilePath);
         }
         var json = await File.ReadAllTextAsync(_ticketfilePath);
         var allTickets = JsonSerializer.Deserialize<List<SupportTicket>>(json);
@@ -60,33 +60,13 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
 
 
     }
-    public async Task<List<TicketComment>> GetCommentsByTicketAsync(SupportTicket ticket)
-    {
-        ArgumentNullException.ThrowIfNull(ticket);
-        if (!File.Exists(_ticketfilePath))
-        {
-            throw new FileNotFoundException("The ticket comment file was not found.", _ticketfilePath);
-        }
-        var json = await File.ReadAllTextAsync(_ticketfilePath);
-        var allComments = JsonSerializer.Deserialize<List<TicketComment>>(json);
-        if (allComments == null)
-        {
-            throw new KeyNotFoundException($"No comments found");
-        }
-        var comments = allComments.Where(c => c.TicketId == ticket.Id).ToList();
-
-        return comments;
-    }
-
-
-
     public async Task<bool> SaveAllAsync(List<SupportTicket> tickets)
     {
         return true;
     }
     public async Task<bool> SaveTicketAsync(SupportTicket ticket)
     {
-        var list = await GetAllTickets();
+        var list = await GetAllTicketsAsync();
         list.Add(ticket);
         return true;
     }
