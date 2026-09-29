@@ -1,4 +1,11 @@
-﻿using System.Text;
+﻿using SupportIssue.Application.Methods;
+using SupportIssue.Domain;
+using SupportIssue.Domain.Entities;
+using SupportIssue.Domain.Enums;
+using SupportIssue.Infrastructure;
+using SupportIssue.Presentation.ViewModels;
+using SupportIssue.Presentation.Views;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +26,23 @@ namespace SupportIssue.Presentation
         public MainWindow()
         {
             InitializeComponent();
+
+            // Tillfällig förhandsvisning med exempeldata i minnet.
+            var ticket = new SupportTicket(
+                "Skrivaren fungerar inte",
+                "Kontorets skrivare tar emot utskrifter men skriver inte ut några sidor.",
+                Guid.NewGuid(),
+                TicketPriority.Normal);
+
+            ticket.AssignTechnician(new Technician("Anna", 1));
+            ticket.UpdateStatus(TicketStatus.InProgress);
+            ticket.AddComment("Kontrollerat att skrivaren är ansluten till nätverket.");
+            ticket.AddComment("Startat om skrivaren och skickat en provutskrift.");
+
+            var repository = new JsonFileTicketHandlingRepository();
+            var service = new TicketHandlingService(repository);
+            var viewModel = new TicketDetailsViewModel(ticket, service);
+            DetailsFrame.Content = new TicketDetailsPage(viewModel);
         }
     }
 }
