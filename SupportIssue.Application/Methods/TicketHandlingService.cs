@@ -1,4 +1,5 @@
-﻿using SupportIssue.Domain.Entities;
+﻿using SupportIssue.Domain;
+using SupportIssue.Domain.Entities;
 using SupportIssue.Domain.Enums;
 
 namespace SupportIssue.Application.Methods;
@@ -22,8 +23,23 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
     {
         try
         {
-            await ticketHandlingRepository.AssignTechnicianAsync(ticket, technicianId);
-            return true;
+            var technicians = Technician.CreateTechnicianList();
+
+            Technician? technician = null;
+
+            foreach (var item in technicians)
+            {
+                if (item.TechnicianId == technicianId)
+                {
+                    technician = item;
+                    break;
+                }
+            }
+            if (technician == null) { throw new ArgumentNullException(nameof(technician)); }
+
+            ticket.AssignTechnician(technician);
+            return await ticketHandlingRepository.SaveTicketAsync(ticket);
+            
         }
         catch (Exception ex)
         {
@@ -37,10 +53,10 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
 
     }
 
-    public async Task<SupportTicket> ChangeTicketStatus(SupportTicket ticket, TicketStatus newStatus)
+    public async Task<bool> ChangeTicketStatus(SupportTicket ticket, TicketStatus newStatus)
     {
-        throw new NotImplementedException();
-
+        ticket.UpdateStatus(newStatus);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
     }
 
     public Task<List<TicketComment>> GetCommentsByTicket(SupportTicket ticket)

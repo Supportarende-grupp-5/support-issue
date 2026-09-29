@@ -1,17 +1,14 @@
 ﻿using SupportIssue.Application.Methods;
+using SupportIssue.Domain;
 using SupportIssue.Domain.Entities;
-using System.Text.Json;
 using SupportIssue.Domain.Enums;
+using System.Net.Sockets;
+using System.Text.Json;
 
 namespace SupportIssue.Infrastructure;
 
 public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
 {
-    private readonly string _commentfilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-        "SupportIssue",
-        "comments.json"
-        );
     private readonly string _ticketfilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
         "SupportIssue",
@@ -25,24 +22,9 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
     };
     public async Task<bool> AddCommentToTicketAsync(SupportTicket ticket, string comment)
     {
-        if (!File.Exists(_commentfilePath))
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(_commentfilePath)!);
-        }
-
-        var ticketComment = new TicketComment(ticket.Id, comment);
-
-        var allComments = await GetAllCommentsAsync();
-        allComments.Add(ticketComment);
-        bool saved = await SaveAllAsync(allComments);
-        if (saved)
-            return true;
-        else
-            return false;
-
+        return true;
 
     }
-    //tillfällig lösning tills vi mergat
     public async Task<SupportTicket> GetTicketByIdAsync(Guid ticketId)
     {
         {
@@ -60,14 +42,32 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
             return ticket;
         }
     }
+    public async Task<List<SupportTicket>> GetAllTickets()
+        {
+        if (!File.Exists(_ticketfilePath))
+        {
+            throw new FileNotFoundException("The ticket comment file was not found.", _ticketfilePath);
+        }
+        var json = await File.ReadAllTextAsync(_ticketfilePath);
+        var allTickets = JsonSerializer.Deserialize<List<SupportTicket>>(json);
+        if (allTickets == null)
+        {
+            throw new KeyNotFoundException($"No Tickets found");
+        }
+       
+
+        return allTickets;
+
+
+    }
     public async Task<List<TicketComment>> GetCommentsByTicketAsync(SupportTicket ticket)
     {
         ArgumentNullException.ThrowIfNull(ticket);
-        if (!File.Exists(_commentfilePath))
+        if (!File.Exists(_ticketfilePath))
         {
-            throw new FileNotFoundException("The ticket comment file was not found.", _commentfilePath);
+            throw new FileNotFoundException("The ticket comment file was not found.", _ticketfilePath);
         }
-        var json = await File.ReadAllTextAsync(_commentfilePath);
+        var json = await File.ReadAllTextAsync(_ticketfilePath);
         var allComments = JsonSerializer.Deserialize<List<TicketComment>>(json);
         if (allComments == null)
         {
@@ -80,51 +80,16 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
 
 
 
-    public async Task<bool> SaveAllAsync(List<TicketComment> comments)
+    public async Task<bool> SaveAllAsync(List<SupportTicket> tickets)
     {
-        Directory.CreateDirectory(Path.GetDirectoryName(_commentfilePath)!);
-        string json = JsonSerializer.Serialize(comments, _options);
-        var tempPath = _commentfilePath + ".tmp";
-        await File.WriteAllTextAsync(tempPath, json);
-        File.Move(tempPath, _commentfilePath, true);
+        return true;
+    }
+    public async Task<bool> SaveTicketAsync(SupportTicket ticket)
+    {
+        var list = await GetAllTickets();
+        list.Add(ticket);
         return true;
     }
 
-    public async Task<List<TicketComment>> GetAllCommentsAsync()
-    {
-        if (!File.Exists(_commentfilePath))
-        {
-            throw new FileNotFoundException("The ticket comment file was not found.", _commentfilePath);
-        }
-        var json = await File.ReadAllTextAsync(_commentfilePath);
-        var allComments = JsonSerializer.Deserialize<List<TicketComment>>(json);
-        if (allComments == null)
-        {
-            throw new KeyNotFoundException($"No comments found");
-        }
-        return allComments;
-    }
-    public async Task<bool> AssignTechnicianAsync(SupportTicket ticket, int technicianId)
-    {
-        ticket.TechnicianId = technicianId;
-        bool saved = await SaveAllTicketsAsync(ticket);
-        return saved;
-    }
-    public async Task<bool> ChangeTicketStatusAsync(SupportTicket ticket, TicketStatus newStatus)
-    {
-        ticket.Status = newStatus;
-        bool saved = await SaveAllTicketsAsync(ticket);
-        return saved;
-    }
-    public async Task<bool> ChangeTicketPriorityAsync(SupportTicket ticket, TicketPriority newPriority)
-    {
-        ticket.Priority = newPriority;
-        bool saved = await SaveAllTicketsAsync(ticket);
-        return saved;
-    }
-
-    public async Task<bool> SaveAllTicketsAsync(SupportTicket ticket)
-    {
-        throw new NotImplementedException();
-    }
+ 
 }

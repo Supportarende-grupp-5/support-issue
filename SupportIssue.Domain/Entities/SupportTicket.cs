@@ -2,7 +2,7 @@
 
 namespace SupportIssue.Domain.Entities;
 
-public class SupportTicket
+public partial class SupportTicket
 {
     public Guid Id { get; private set; }
     public Guid CustomerId { get; private set; }
@@ -14,6 +14,7 @@ public class SupportTicket
     public TicketStatus Status { get; private set; }
 
     public DateTimeOffset CreatedAt { get; private set; }
+    public Technician? AssignedTechnician { get; private set; }
 
     public SupportTicket(
 
