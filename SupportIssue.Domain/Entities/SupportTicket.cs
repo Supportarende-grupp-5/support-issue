@@ -1,5 +1,4 @@
 ﻿using SupportIssue.Domain.Enums;
-using static SupportIssue.Domain.Ticket;
 
 namespace SupportIssue.Domain.Entities;
 

@@ -1,7 +1,7 @@
 ﻿using SupportIssue.Application.Methods;
 using SupportIssue.Domain.Entities;
 using System.Text.Json;
-using static SupportIssue.Domain.Ticket;
+using SupportIssue.Domain.Enums;
 
 namespace SupportIssue.Infrastructure;
 
@@ -23,7 +23,7 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
         PropertyNameCaseInsensitive = true
 
     };
-    public async Task<bool> AddCommentToTicketAsync(Ticket ticket, string comment)
+    public async Task<bool> AddCommentToTicketAsync(SupportTicket ticket, string comment)
     {
         if (!File.Exists(_commentfilePath))
         {
@@ -43,7 +43,7 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
 
     }
     //tillfällig lösning tills vi mergat
-    public async Task<Ticket> GetTicketByIdAsync(Guid ticketId)
+    public async Task<SupportTicket> GetTicketByIdAsync(Guid ticketId)
     {
         {
             if (!File.Exists(_ticketfilePath))
@@ -51,7 +51,7 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
                 throw new FileNotFoundException("The ticket file was not found.", _ticketfilePath);
             }
             var json = await File.ReadAllTextAsync(_ticketfilePath);
-            var tickets = JsonSerializer.Deserialize<List<Ticket>>(json);
+            var tickets = JsonSerializer.Deserialize<List<SupportTicket>>(json);
             var ticket = tickets?.FirstOrDefault(t => t.Id == ticketId);
             if (ticket == null)
             {
@@ -60,7 +60,7 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
             return ticket;
         }
     }
-    public async Task<List<TicketComment>> GetCommentsByTicketAsync(Ticket ticket)
+    public async Task<List<TicketComment>> GetCommentsByTicketAsync(SupportTicket ticket)
     {
         ArgumentNullException.ThrowIfNull(ticket);
         if (!File.Exists(_commentfilePath))
@@ -104,26 +104,26 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
         }
         return allComments;
     }
-    public async Task<bool> AssignTechnicianAsync(Ticket ticket, int technicianId)
+    public async Task<bool> AssignTechnicianAsync(SupportTicket ticket, int technicianId)
     {
         ticket.TechnicianId = technicianId;
         bool saved = await SaveAllTicketsAsync(ticket);
         return saved;
     }
-    public async Task<bool> ChangeTicketStatusAsync(Ticket ticket, TicketStatus newStatus)
+    public async Task<bool> ChangeTicketStatusAsync(SupportTicket ticket, TicketStatus newStatus)
     {
         ticket.Status = newStatus;
         bool saved = await SaveAllTicketsAsync(ticket);
         return saved;
     }
-    public async Task<bool> ChangeTicketPriorityAsync(Ticket ticket, TicketPriority newPriority)
+    public async Task<bool> ChangeTicketPriorityAsync(SupportTicket ticket, TicketPriority newPriority)
     {
         ticket.Priority = newPriority;
         bool saved = await SaveAllTicketsAsync(ticket);
         return saved;
     }
 
-    public async Task<bool> SaveAllTicketsAsync(Ticket ticket)
+    public async Task<bool> SaveAllTicketsAsync(SupportTicket ticket)
     {
         throw new NotImplementedException();
     }

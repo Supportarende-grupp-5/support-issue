@@ -1,11 +1,11 @@
 ﻿using SupportIssue.Domain.Entities;
-using static SupportIssue.Domain.Ticket;
+using SupportIssue.Domain.Enums;
 
 namespace SupportIssue.Application.Methods;
 
 public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepository) : ITicketHandlingService
 {
-    public async Task<bool> AddCommentToTicket(Ticket ticket, string comment)
+    public async Task<bool> AddCommentToTicket(SupportTicket ticket, string comment)
     {
         try
         {
@@ -18,7 +18,7 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
         }
     }
 
-    public async Task<bool> AssignTechnician(Ticket ticket, int technicianId)
+    public async Task<bool> AssignTechnician(SupportTicket ticket, int technicianId)
     {
         try
         {
@@ -31,19 +31,19 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
         }
     }
 
-    public async Task<Ticket> ChangeTicketPriority(Ticket ticket, TicketPriority newPriority)
+    public async Task<SupportTicket> ChangeTicketPriority(SupportTicket ticket, TicketPriority newPriority)
     {
         throw new NotImplementedException();
 
     }
 
-    public async Task<Ticket> ChangeTicketStatus(Ticket ticket, TicketStatus newStatus)
+    public async Task<SupportTicket> ChangeTicketStatus(SupportTicket ticket, TicketStatus newStatus)
     {
         throw new NotImplementedException();
 
     }
 
-    public Task<List<TicketComment>> GetCommentsByTicket(Ticket ticket)
+    public Task<List<TicketComment>> GetCommentsByTicket(SupportTicket ticket)
     {
         try
         {
@@ -56,7 +56,7 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
         }
     }
 
-    public async Task<Ticket> GetTicketById(Guid ticketId)
+    public async Task<SupportTicket> GetTicketById(Guid ticketId)
     {
         try
         {

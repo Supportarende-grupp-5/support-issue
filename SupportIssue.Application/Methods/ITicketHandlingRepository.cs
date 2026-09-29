@@ -1,15 +1,15 @@
 ﻿using SupportIssue.Domain.Entities;
-using static SupportIssue.Domain.Ticket;
+using SupportIssue.Domain.Enums;
 
 namespace SupportIssue.Application.Methods;
 
 public interface ITicketHandlingRepository
 {
-    Task<Ticket> GetTicketByIdAsync(Guid ticketId);
-    Task<List<TicketComment>> GetCommentsByTicketAsync(Ticket ticket);
-    Task<bool> AddCommentToTicketAsync(Ticket ticket, string comment);
+    Task<SupportTicket> GetTicketByIdAsync(Guid ticketId);
+    Task<List<TicketComment>> GetCommentsByTicketAsync(SupportTicket ticket);
+    Task<bool> AddCommentToTicketAsync(SupportTicket ticket, string comment);
     Task<List<TicketComment>> GetAllCommentsAsync();
-    Task<bool> AssignTechnicianAsync(Ticket ticket, int technicianId);
-    Task<bool> ChangeTicketStatusAsync(Ticket ticket, TicketStatus newstatus);
-    Task<bool> ChangeTicketPriorityAsync(Ticket ticket, TicketPriority newPriority);
+    Task<bool> AssignTechnicianAsync(SupportTicket ticket, int technicianId);
+    Task<bool> ChangeTicketStatusAsync(SupportTicket ticket, TicketStatus newstatus);
+    Task<bool> ChangeTicketPriorityAsync(SupportTicket ticket, TicketPriority newPriority);
 }
