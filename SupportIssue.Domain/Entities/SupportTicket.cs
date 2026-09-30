@@ -37,7 +37,7 @@ public class SupportTicket
             throw new ArgumentException("A customer must be selected.");
         }
 
-        if (!Enum.IsDefined(Priority))
+        if (!Enum.IsDefined(ticketPriority))
         {
             throw new ArgumentException("Invalid priority.");
         }
@@ -51,5 +51,49 @@ public class SupportTicket
         CustomerId = customerId;
         Priority = ticketPriority;
     }
+    public static SupportTicket Restore(
+        Guid id,
+        string Title,
+        string Description,
+        Guid customerid,
+        TicketPriority ticketPriority,
+        TicketStatus ticketStatus,
+        DateTimeOffset createdAt)
+    {
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentException("Ticket ID is required.");
+        }
+
+        if (createdAt == default)
+        {
+            throw new ArgumentException("Creation date is required.");
+        }
+
+        if (!Enum.IsDefined(ticketStatus))
+        {
+            throw new ArgumentException("Invalid status.");
+        }
+
+        if(ticketStatus != TicketStatus.New)
+        {
+            throw new ArgumentException(
+                "Restoring an ongoing or resolved ticket requires technician support.");
+        }
+
+        var ticket = new SupportTicket(
+            Title,
+            Description,
+            customerid,
+            ticketPriority);
+
+        ticket.Id = id;
+        ticket.CreatedAt = createdAt;
+        ticket.Status = ticketStatus;
+
+        return ticket;
+    }
+
+
 
 }
