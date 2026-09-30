@@ -4,5 +4,7 @@ namespace SupportIssue.Application.Interfaces;
 
 public interface ITicketRepository
 {
-    void Add(SupportTicket ticket);
+    Task AddAsync(SupportTicket ticket);
+
+    Task<IReadOnlyList<SupportTicket>> GetAllAsync();
 }

@@ -20,7 +20,8 @@ public class TicketService : ITicketService
 
     }
 
-    public SupportTicket CreateTicket(CreateTicketRequest request)
+    public async Task<SupportTicket> CreateTicketAsync(
+    CreateTicketRequest request)
     {
         ArgumentNullException.ThrowIfNull(request);
 
@@ -28,7 +29,8 @@ public class TicketService : ITicketService
 
         if (customer is null)
         {
-            throw new ArgumentException("The selected customer does not exist");
+            throw new ArgumentException(
+                "The selected customer does not exist.");
         }
 
         var ticket = new SupportTicket(
@@ -37,7 +39,7 @@ public class TicketService : ITicketService
             request.CustomerId,
             request.Priority);
 
-        _ticketRepository.Add(ticket);
+        await _ticketRepository.AddAsync(ticket);
 
         return ticket;
     }

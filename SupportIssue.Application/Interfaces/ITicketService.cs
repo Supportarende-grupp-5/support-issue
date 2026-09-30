@@ -6,8 +6,7 @@ namespace SupportIssue.Application.Interfaces;
 
 public interface ITicketService
 {
-    SupportTicket CreateTicket(CreateTicketRequest request);
-
+    Task<SupportTicket> CreateTicketAsync(CreateTicketRequest request);
     IReadOnlyList<Customer> GetCustomers();
 
 }
