@@ -1,5 +1,5 @@
 ﻿
-using SupportIssue.Application.Methods;
+using SupportIssue.Application.TicketHandling;
 using SupportIssue.Domain.Entities;
 using SupportIssue.Domain.Enums;
 using System.Security.Cryptography.X509Certificates;

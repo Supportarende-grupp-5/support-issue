@@ -2,7 +2,7 @@
 using SupportIssue.Domain.Entities;
 using SupportIssue.Domain.Enums;
 
-namespace SupportIssue.Application.Methods;
+namespace SupportIssue.Application.TicketHandling;
 
 public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepository) : ITicketHandlingService
 {
