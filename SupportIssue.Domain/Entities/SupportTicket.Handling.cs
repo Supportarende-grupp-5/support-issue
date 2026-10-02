@@ -35,18 +35,13 @@ public partial class SupportTicket
     }
     public void UpdatePriority(TicketPriority ticketPriority)
     {
-        switch (ticketPriority)
+        if (!Enum.IsDefined(ticketPriority))
         {
-            case TicketPriority.Low:
-                this.Priority = ticketPriority;
-                break;
-            case TicketPriority.Normal:
-                this.Priority = ticketPriority;
-                break;
-            case TicketPriority.High:
-                this.Priority = ticketPriority;
-                break;
-            default : throw new InvalidOperationException("Invalid priority");
+            throw new InvalidOperationException("Invalid priority");
+        }
+        else
+        {
+            this.Priority = ticketPriority;
 
         }
     }

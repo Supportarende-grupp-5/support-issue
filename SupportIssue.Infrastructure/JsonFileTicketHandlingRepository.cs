@@ -57,14 +57,8 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
 
 
     }
-    public async Task<bool> SaveAllAsync(List<SupportTicket> tickets)
-    {
-        return true;
-    }
     public async Task<bool> SaveTicketAsync(SupportTicket ticket)
     {
-        var list = await GetAllTicketsAsync();
-        list.Add(ticket);
         return true;
     }
 
