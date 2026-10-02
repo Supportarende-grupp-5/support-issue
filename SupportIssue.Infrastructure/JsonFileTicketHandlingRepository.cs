@@ -1,8 +1,5 @@
 ﻿using SupportIssue.Application.TicketHandling;
-using SupportIssue.Domain;
 using SupportIssue.Domain.Entities;
-using SupportIssue.Domain.Enums;
-using System.Net.Sockets;
 using System.Text.Json;
 
 namespace SupportIssue.Infrastructure;
