@@ -20,8 +20,16 @@ public partial class CustomerView : UserControl
     }
 
     private void LoadCustomers()
+        
     {
-        CustomersDataGrid.ItemsSource = _customerService.GetAllCustomers();
+        try
+        {
+            CustomersDataGrid.ItemsSource = _customerService.GetAllCustomers();
+        }
+        catch (InvalidOperationException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
     }
 
     private void AddCustomerButton_Click(object sender, RoutedEventArgs e)
@@ -40,10 +48,16 @@ public partial class CustomerView : UserControl
 
             MessageBox.Show("Kunden har lagts till.");
         }
+
         catch (ArgumentException ex)
         {
             MessageBox.Show(ex.Message);
         }
+        catch (InvalidOperationException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+       
     }
 
     private void CustomersDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -82,6 +96,10 @@ public partial class CustomerView : UserControl
 
         }
         catch (ArgumentException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+        catch (InvalidOperationException ex)
         {
             MessageBox.Show(ex.Message);
         }
