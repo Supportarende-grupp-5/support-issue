@@ -1,13 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using SupportIssue.Application.Customers;
-
+using SupportIssue.Domain.Customers;
 
 namespace SupportIssue.Presentation.Views;
 
 public partial class CustomerView : UserControl
 {
     private readonly CustomerService _customerService;
+    private Customer? _selectedCustomer;
 
     public CustomerView(CustomerService customerService)
     {
@@ -38,6 +39,47 @@ public partial class CustomerView : UserControl
             EmailTextBox.Clear();
 
             MessageBox.Show("Kunden har lagts till.");
+        }
+        catch (ArgumentException ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    private void CustomersDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (CustomersDataGrid.SelectedItem is Customer customer)
+        {
+            _selectedCustomer = customer;
+
+            NameTextBox.Text = customer.Name;
+            EmailTextBox.Text = customer.Email;
+        }
+    }
+
+    private void UpdateCustomerButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedCustomer == null)
+        {
+            MessageBox.Show("Välj en kund att uppdatera.");
+            return;
+        }
+
+        try
+        {
+            var updatedName = NameTextBox.Text;
+            var updatedEmail = EmailTextBox.Text;
+
+            _customerService.UpdateCustomer(_selectedCustomer.Id, updatedName, updatedEmail);
+
+            LoadCustomers();
+            NameTextBox.Clear();
+            EmailTextBox.Clear();
+
+            _selectedCustomer = null;
+            CustomersDataGrid.SelectedItem = null;
+            MessageBox.Show("Kunden har uppdaterats.");
+
         }
         catch (ArgumentException ex)
         {
