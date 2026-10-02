@@ -2,7 +2,7 @@
 using SupportIssue.Domain;
 using SupportIssue.Domain.Entities;
 using SupportIssue.Domain.Enums;
-using SupportIssue.Infrastructure;
+using SupportIssue.Infrastructure.TicketHandling;
 using SupportIssue.Presentation.ViewModels;
 using SupportIssue.Presentation.Views;
 using System.Text;

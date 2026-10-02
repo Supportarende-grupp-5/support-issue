@@ -3,9 +3,9 @@
 public class Technician
 {
     public string? TechnicianName { get; set; }
-    public int TechnicianId { get; set; }
+    public int? TechnicianId { get; set; }
 
-    public Technician(string name, int id)
+    public Technician(string name, int? id)
     {
         TechnicianName = name;
         TechnicianId = id;

@@ -7,8 +7,11 @@ public partial class SupportTicket
     public void AssignTechnician(Technician technician)
     {
         if (technician == null) throw new ArgumentNullException((nameof(technician)));
+        if (technician.TechnicianId is null or <= 0)
+            throw new ArgumentException("A technician must have a valid id.", nameof(technician));
         this.AssignedTechnician = technician;
     }
+
     public void UpdateStatus(TicketStatus status)
     {
         switch (status)
@@ -25,9 +28,7 @@ public partial class SupportTicket
                 break;
             case TicketStatus.Resolved:
                 if (this.AssignedTechnician == null)
-                {
                     throw new InvalidOperationException("You may not change status to Resolved without assigning a technician");
-                }
                 this.Status = status;
                 break;
             default: throw new InvalidOperationException("Invalid status");

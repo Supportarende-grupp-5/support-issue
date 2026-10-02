@@ -15,6 +15,7 @@ public partial class SupportTicket
 
     public DateTimeOffset CreatedAt { get; private set; }
     public Technician? AssignedTechnician { get; private set; }
+    public int? AssignedTechnicianId => AssignedTechnician?.TechnicianId;
     public List<TicketComment> Comments { get; private set; }
 
     public SupportTicket(
@@ -39,7 +40,7 @@ public partial class SupportTicket
             throw new ArgumentException("A customer must be selected.");
         }
 
-        if (!Enum.IsDefined(Priority))
+        if (!Enum.IsDefined(ticketPriority))
         {
             throw new ArgumentException("Invalid priority.");
         }
