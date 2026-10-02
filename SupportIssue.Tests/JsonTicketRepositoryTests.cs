@@ -106,4 +106,45 @@ public class JsonTicketRepositoryTests
             Directory.Delete(testDirectory, recursive: true);
         }
     }
+
+    [Fact]
+    public async Task AddAsync_InvalidJson_DoesNotOverwriteFile()
+    {
+        var testDirectory = Path.Combine(
+            Path.GetTempPath(),
+            $"SupportIssueTests_{Guid.NewGuid():N}");
+
+        Directory.CreateDirectory(testDirectory);
+
+        var filePath = Path.Combine(testDirectory, "tickets.json");
+
+        try
+        {
+            // Arrange: skapa en fil med trasig JSON.
+            var invalidJson = "{ invalid json";
+
+            await File.WriteAllTextAsync(filePath, invalidJson);
+
+            var repository = new JsonTicketRepository(filePath);
+
+            var ticket = new SupportTicket(
+                "Cannot log in",
+                "An error appears when logging in.",
+                Guid.NewGuid(),
+                TicketPriority.Normal);
+
+            // Act och Assert: sparandet ska avbrytas med ett fel.
+            await Assert.ThrowsAsync<InvalidDataException>(
+                () => repository.AddAsync(ticket));
+
+            // Kontrollera att filens innehåll är oförändrat.
+            var contentAfter = await File.ReadAllTextAsync(filePath);
+
+            Assert.Equal(invalidJson, contentAfter);
+        }
+        finally
+        {
+            Directory.Delete(testDirectory, recursive: true);
+        }
+    }
 }
