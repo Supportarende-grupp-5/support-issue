@@ -1,11 +1,10 @@
 using SupportIssue.Application.TicketHandling;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SupportIssue.Presentation.ViewModels;
 
-public class TicketDetailsViewModel : INotifyPropertyChanged
+public partial class TicketDetailsViewModel : ObservableObject
 {
     private TicketDetails currentTicket;
     private readonly ITicketHandlingService ticketHandlingService;
@@ -17,29 +16,11 @@ public class TicketDetailsViewModel : INotifyPropertyChanged
     public ObservableCollection<TicketCommentDetails> Comments { get; }
     public IReadOnlyList<TechnicianOption> Technicians { get; }
 
-    private string newCommentText = string.Empty;
-    public string NewCommentText
-    {
-        get => newCommentText;
-        set
-        {
-            if (newCommentText == value) return;
-            newCommentText = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial string NewCommentText { get; set; } = string.Empty;
 
-    private TechnicianOption? selectedTechnician;
-    public TechnicianOption? SelectedTechnician
-    {
-        get => selectedTechnician;
-        set
-        {
-            if (selectedTechnician == value) return;
-            selectedTechnician = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial TechnicianOption? SelectedTechnician { get; set; }
 
     public TicketDetailsViewModel(TicketDetails ticket, ITicketHandlingService service)
     {
@@ -75,18 +56,8 @@ public class TicketDetailsViewModel : INotifyPropertyChanged
         if (result) await RefreshAsync();
         return result;
     }
-    private TicketPriorityOption selectedPriority;
-
-    public TicketPriorityOption SelectedPriority
-    {
-        get => selectedPriority;
-        set
-        {
-            if (selectedPriority == value) return;
-            selectedPriority = value;
-            OnPropertyChanged();
-        }
-    }
+    [ObservableProperty]
+    public partial TicketPriorityOption SelectedPriority { get; set; }
     public IReadOnlyList<TicketPriorityOption> PriorityOptions { get; }
     = Enum.GetValues<TicketPriorityOption>();
 
@@ -104,7 +75,4 @@ public class TicketDetailsViewModel : INotifyPropertyChanged
         SelectedPriority = currentTicket.Priority;
     }
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

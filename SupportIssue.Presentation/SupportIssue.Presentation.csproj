@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SupportIssue.Application\SupportIssue.Application.csproj" />
     <ProjectReference Include="..\SupportIssue.Infrastructure\SupportIssue.Infrastructure.csproj" />
   </ItemGroup>
