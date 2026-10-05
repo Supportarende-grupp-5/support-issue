@@ -7,14 +7,16 @@ namespace SupportIssue.Presentation.ViewModels;
 
 public partial class TicketDetailsViewModel : ObservableObject
 {
-    private TicketDetails currentTicket;
+    private TicketDetails? currentTicket;
     private readonly ITicketHandlingService ticketHandlingService;
-    public string Title => currentTicket.Title;
-    public string Description => currentTicket.Description;
-    public TicketStatusOption Status => currentTicket.Status;
-    public TicketPriorityOption Priority => currentTicket.Priority;
-    public string TechnicianName => currentTicket.TechnicianName ?? "Ej tilldelad";
-    public ObservableCollection<TicketCommentDetails> Comments { get; }
+    public string Title => currentTicket?.Title ?? string.Empty;
+    public string Description => currentTicket?.Description ?? string.Empty;
+    public TicketStatusOption Status => currentTicket?.Status ?? TicketStatusOption.New;
+    public TicketPriorityOption Priority => currentTicket?.Priority ?? TicketPriorityOption.Normal;
+    public string TechnicianName => currentTicket?.TechnicianName ?? "Ej tilldelad";
+    private Guid CurrentTicketId => currentTicket?.Id
+        ?? throw new InvalidOperationException("Inget ärende har lästs in.");
+    public ObservableCollection<TicketCommentDetails> Comments { get; } = [];
     public IReadOnlyList<TechnicianOption> Technicians { get; }
 
     [ObservableProperty]
@@ -37,17 +39,39 @@ public partial class TicketDetailsViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(AssignSelectedTechnicianCommand))]
     public partial TechnicianOption? SelectedTechnician { get; set; }
 
-    public TicketDetailsViewModel(TicketDetails ticket, ITicketHandlingService service)
+    public TicketDetailsViewModel(ITicketHandlingService service)
     {
-        currentTicket = ticket;
         ticketHandlingService = service;
         Technicians = service.GetTechnicians();
-        Comments = new ObservableCollection<TicketCommentDetails>(ticket.Comments);
-        SelectedTechnician = Technicians.FirstOrDefault(item => item.TechnicianId == ticket.AssignedTechnicianId);
-        SelectedPriority = ticket.Priority;
     }
 
-    private bool CanAddComment() => !IsBusy && !string.IsNullOrWhiteSpace(NewCommentText);
+    public async Task LoadAsync(Guid ticketId)
+    {
+        if (IsBusy) throw new InvalidOperationException("Vänta tills den pågående åtgärden är klar.");
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        currentTicket = null;
+        NewCommentText = string.Empty;
+        UpdateDisplayedTicket();
+        try
+        {
+            if (ticketId == Guid.Empty)
+                throw new ArgumentException("Välj ett ärende med ett giltigt id.", nameof(ticketId));
+            currentTicket = await ticketHandlingService.GetTicketById(ticketId);
+            UpdateDisplayedTicket();
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Ärendet kunde inte läsas in. Kontrollera ärende-id och datafilen.";
+            throw;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private bool CanAddComment() => currentTicket != null && !IsBusy && !string.IsNullOrWhiteSpace(NewCommentText);
 
     [RelayCommand(CanExecute = nameof(CanAddComment))]
     private async Task AddCommentAsync()
@@ -56,7 +80,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         StatusMessage = string.Empty;
         try
         {
-            var result = await ticketHandlingService.AddCommentToTicket(currentTicket.Id, NewCommentText);
+            var result = await ticketHandlingService.AddCommentToTicket(CurrentTicketId, NewCommentText);
             if (!result)
             {
                 StatusMessage = "Kommentaren kunde inte sparas.";
@@ -80,7 +104,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         }
     }
 
-    private bool CanAssignTechnician() => !IsBusy && SelectedTechnician != null;
+    private bool CanAssignTechnician() => currentTicket != null && !IsBusy && SelectedTechnician != null;
 
     [RelayCommand(CanExecute = nameof(CanAssignTechnician))]
     private async Task AssignSelectedTechnicianAsync()
@@ -90,7 +114,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         try
         {
             if (SelectedTechnician == null) throw new ArgumentException("Välj en handläggare.");
-            var result = await ticketHandlingService.AssignTechnician(currentTicket.Id, SelectedTechnician.TechnicianId);
+            var result = await ticketHandlingService.AssignTechnician(CurrentTicketId, SelectedTechnician.TechnicianId);
             if (!result)
             {
                 StatusMessage = "Handläggaren kunde inte tilldelas.";
@@ -113,7 +137,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         }
     }
 
-    private bool CanChangePriority() => !IsBusy && Enum.IsDefined(SelectedPriority);
+    private bool CanChangePriority() => currentTicket != null && !IsBusy && Enum.IsDefined(SelectedPriority);
 
     [RelayCommand(CanExecute = nameof(CanChangePriority))]
     private async Task ChangePriorityAsync()
@@ -122,7 +146,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         StatusMessage = string.Empty;
         try
         {
-            var result = await ticketHandlingService.ChangeTicketPriority(currentTicket.Id, SelectedPriority);
+            var result = await ticketHandlingService.ChangeTicketPriority(CurrentTicketId, SelectedPriority);
             if (!result)
             {
                 StatusMessage = "Prioriteten kunde inte ändras.";
@@ -153,16 +177,26 @@ public partial class TicketDetailsViewModel : ObservableObject
 
     private async Task RefreshAsync()
     {
-        currentTicket = await ticketHandlingService.GetTicketById(currentTicket.Id);
+        currentTicket = await ticketHandlingService.GetTicketById(CurrentTicketId);
+        UpdateDisplayedTicket();
+    }
+
+    private void UpdateDisplayedTicket()
+    {
         Comments.Clear();
-        foreach (var comment in currentTicket.Comments) Comments.Add(comment);
-        SelectedTechnician = Technicians.FirstOrDefault(item => item.TechnicianId == currentTicket.AssignedTechnicianId);
+        if (currentTicket != null)
+            foreach (var comment in currentTicket.Comments) Comments.Add(comment);
+        SelectedTechnician = currentTicket == null ? null
+            : Technicians.FirstOrDefault(item => item.TechnicianId == currentTicket.AssignedTechnicianId);
         OnPropertyChanged(nameof(Title));
         OnPropertyChanged(nameof(Description));
         OnPropertyChanged(nameof(Status));
         OnPropertyChanged(nameof(Priority));
         OnPropertyChanged(nameof(TechnicianName));
-        SelectedPriority = currentTicket.Priority;
+        SelectedPriority = Priority;
+        AddCommentCommand.NotifyCanExecuteChanged();
+        AssignSelectedTechnicianCommand.NotifyCanExecuteChanged();
+        ChangePriorityCommand.NotifyCanExecuteChanged();
     }
 
 }

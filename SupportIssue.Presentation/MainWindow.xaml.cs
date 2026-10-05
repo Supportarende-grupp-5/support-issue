@@ -19,7 +19,8 @@ public partial class MainWindow : Window
         try
         {
             var preview = await TicketHandlingPreview.CreateAsync();
-            var viewModel = new TicketDetailsViewModel(preview.Ticket, preview.Service);
+            var viewModel = new TicketDetailsViewModel(preview.Service);
+            await viewModel.LoadAsync(preview.Ticket.Id);
             DetailsFrame.Content = new TicketDetailsPage(viewModel);
         }
         catch (Exception)
