@@ -20,7 +20,6 @@ public partial class CustomerView : UserControl
     }
 
     private void LoadCustomers()
-        
     {
         try
         {
