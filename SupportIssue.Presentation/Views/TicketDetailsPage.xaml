@@ -49,7 +49,7 @@
                     ItemsSource="{Binding Technicians}"
                     DisplayMemberPath="TechnicianName"
                     SelectedItem="{Binding SelectedTechnician, Mode=TwoWay}" />
-                <Button x:Name="AssignTechnicianButton" Click="AssignTechnicianButton_Click">
+                <Button x:Name="AssignTechnicianButton" Command="{Binding AssignSelectedTechnicianCommand}">
                     Tilldela handläggare
                 </Button>
             </StackPanel>
@@ -57,7 +57,7 @@
                 <ComboBox 
                     ItemsSource="{Binding PriorityOptions}"
                     SelectedItem="{Binding SelectedPriority, Mode=TwoWay}" />
-                <Button x:Name="AssignPriorityButton" Click="AssignPriorityButton_Click">
+                <Button x:Name="AssignPriorityButton" Command="{Binding ChangePriorityCommand}">
                     Tilldela prioritet
                 </Button>
             </StackPanel>

@@ -24,6 +24,8 @@ public partial class TicketDetailsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     [NotifyCanExecuteChangedFor(nameof(AddCommentCommand))]
+    [NotifyCanExecuteChangedFor(nameof(AssignSelectedTechnicianCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ChangePriorityCommand))]
     public partial bool IsBusy { get; private set; }
 
     public bool IsNotBusy => !IsBusy;
@@ -32,6 +34,7 @@ public partial class TicketDetailsViewModel : ObservableObject
     public partial string StatusMessage { get; private set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AssignSelectedTechnicianCommand))]
     public partial TechnicianOption? SelectedTechnician { get; set; }
 
     public TicketDetailsViewModel(TicketDetails ticket, ITicketHandlingService service)
@@ -77,20 +80,73 @@ public partial class TicketDetailsViewModel : ObservableObject
         }
     }
 
-    public async Task<bool> AssignSelectedTechnicianAsync()
+    private bool CanAssignTechnician() => !IsBusy && SelectedTechnician != null;
+
+    [RelayCommand(CanExecute = nameof(CanAssignTechnician))]
+    private async Task AssignSelectedTechnicianAsync()
     {
-        if (SelectedTechnician == null) throw new ArgumentException("Välj en handläggare.");
-        var result = await ticketHandlingService.AssignTechnician(currentTicket.Id, SelectedTechnician.TechnicianId);
-        if (result) await RefreshAsync();
-        return result;
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        try
+        {
+            if (SelectedTechnician == null) throw new ArgumentException("Välj en handläggare.");
+            var result = await ticketHandlingService.AssignTechnician(currentTicket.Id, SelectedTechnician.TechnicianId);
+            if (!result)
+            {
+                StatusMessage = "Handläggaren kunde inte tilldelas.";
+                return;
+            }
+            await RefreshAsync();
+            StatusMessage = "Handläggaren har tilldelats.";
+        }
+        catch (ArgumentException)
+        {
+            StatusMessage = "Välj en giltig handläggare.";
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Handläggaren kunde inte tilldelas. Kontrollera datafilen och försök igen.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
-    public async Task<bool> ChangePriorityAsync(TicketPriorityOption newPriority)
+
+    private bool CanChangePriority() => !IsBusy && Enum.IsDefined(SelectedPriority);
+
+    [RelayCommand(CanExecute = nameof(CanChangePriority))]
+    private async Task ChangePriorityAsync()
     {
-        var result = await ticketHandlingService.ChangeTicketPriority(currentTicket.Id, newPriority);
-        if (result) await RefreshAsync();
-        return result;
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        try
+        {
+            var result = await ticketHandlingService.ChangeTicketPriority(currentTicket.Id, SelectedPriority);
+            if (!result)
+            {
+                StatusMessage = "Prioriteten kunde inte ändras.";
+                return;
+            }
+            await RefreshAsync();
+            StatusMessage = "Prioriteten har ändrats.";
+        }
+        catch (ArgumentException)
+        {
+            StatusMessage = "Välj en giltig prioritet.";
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Prioriteten kunde inte ändras. Kontrollera datafilen och försök igen.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
+
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ChangePriorityCommand))]
     public partial TicketPriorityOption SelectedPriority { get; set; }
     public IReadOnlyList<TicketPriorityOption> PriorityOptions { get; }
     = Enum.GetValues<TicketPriorityOption>();
