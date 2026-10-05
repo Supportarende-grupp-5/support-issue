@@ -1,6 +1,7 @@
 using SupportIssue.Application.TicketHandling;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace SupportIssue.Presentation.ViewModels;
 
@@ -17,7 +18,18 @@ public partial class TicketDetailsViewModel : ObservableObject
     public IReadOnlyList<TechnicianOption> Technicians { get; }
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AddCommentCommand))]
     public partial string NewCommentText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotBusy))]
+    [NotifyCanExecuteChangedFor(nameof(AddCommentCommand))]
+    public partial bool IsBusy { get; private set; }
+
+    public bool IsNotBusy => !IsBusy;
+
+    [ObservableProperty]
+    public partial string StatusMessage { get; private set; } = string.Empty;
 
     [ObservableProperty]
     public partial TechnicianOption? SelectedTechnician { get; set; }
@@ -32,15 +44,37 @@ public partial class TicketDetailsViewModel : ObservableObject
         SelectedPriority = ticket.Priority;
     }
 
-    public async Task<bool> AddCommentAsync()
+    private bool CanAddComment() => !IsBusy && !string.IsNullOrWhiteSpace(NewCommentText);
+
+    [RelayCommand(CanExecute = nameof(CanAddComment))]
+    private async Task AddCommentAsync()
     {
-        var result = await ticketHandlingService.AddCommentToTicket(currentTicket.Id, NewCommentText);
-        if (result)
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        try
         {
+            var result = await ticketHandlingService.AddCommentToTicket(currentTicket.Id, NewCommentText);
+            if (!result)
+            {
+                StatusMessage = "Kommentaren kunde inte sparas.";
+                return;
+            }
             await RefreshAsync();
             NewCommentText = string.Empty;
+            StatusMessage = "Kommentaren har lagts till.";
         }
-        return result;
+        catch (ArgumentException)
+        {
+            StatusMessage = "Skriv en kommentar som inte är tom eller bara innehåller blanksteg.";
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Kommentaren kunde inte läggas till. Kontrollera datafilen och försök igen.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     public async Task<bool> AssignSelectedTechnicianAsync()

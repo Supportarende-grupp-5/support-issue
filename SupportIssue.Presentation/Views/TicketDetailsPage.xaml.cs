@@ -13,33 +13,6 @@ public partial class TicketDetailsPage : Page
         DataContext = viewModel;
     }
 
-    private async void AddCommentButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (DataContext is not TicketDetailsViewModel viewModel) return;
-        AddCommentButton.IsEnabled = false;
-        AssignTechnicianButton.IsEnabled = false;
-        AssignPriorityButton.IsEnabled = false;
-        try
-        {
-            if (!await viewModel.AddCommentAsync())
-                MessageBox.Show("Kommentaren kunde inte sparas.");
-        }
-        catch (ArgumentException)
-        {
-            MessageBox.Show("Skriv en kommentar som inte är tom eller bara innehåller blanksteg.");
-        }
-        catch (Exception)
-        {
-            MessageBox.Show("Kommentaren kunde inte läggas till. Kontrollera datafilen och försök igen.");
-        }
-        finally
-        {
-            AddCommentButton.IsEnabled = true;
-            AssignTechnicianButton.IsEnabled = true;
-            AssignPriorityButton.IsEnabled = true;
-        }
-    }
-
     private async void AssignTechnicianButton_Click(object sender, RoutedEventArgs e)
     {
         if (DataContext is not TicketDetailsViewModel viewModel) return;
