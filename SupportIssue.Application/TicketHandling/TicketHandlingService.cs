@@ -1,4 +1,4 @@
-﻿using SupportIssue.Domain;
+using SupportIssue.Domain;
 using SupportIssue.Domain.Entities;
 using SupportIssue.Domain.Enums;
 
@@ -6,69 +6,76 @@ namespace SupportIssue.Application.TicketHandling;
 
 public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepository) : ITicketHandlingService
 {
-    public async Task<bool> AddCommentToTicket(SupportTicket ticket, string commentText)
-    {
-            ticket.AddComment(commentText);
-            return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    public IReadOnlyList<TechnicianOption> GetTechnicians() => Technician.CreateTechnicianList()
+        .Select(item => new TechnicianOption(item.TechnicianId
+            ?? throw new InvalidOperationException("Handläggarens id saknas."),
+            item.TechnicianName ?? "Namn saknas")).ToList();
 
+    public async Task<bool> AddCommentToTicket(Guid ticketId, string commentText)
+    {
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        ticket.AddComment(commentText);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
     }
 
-    public async Task<bool> AssignTechnician(SupportTicket ticket, int technicianId)
+    public async Task<bool> AssignTechnician(Guid ticketId, int technicianId)
     {
-        try
+        var technician = Technician.CreateTechnicianList()
+            .FirstOrDefault(item => item.TechnicianId == technicianId)
+            ?? throw new ArgumentException("Välj en giltig handläggare.", nameof(technicianId));
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        ticket.AssignTechnician(technician);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    }
+
+    public async Task<bool> ChangeTicketPriority(Guid ticketId, TicketPriorityOption newPriority)
+    {
+        var priority = newPriority switch
         {
-            var technicians = Technician.CreateTechnicianList();
+            TicketPriorityOption.Low => TicketPriority.Low,
+            TicketPriorityOption.Normal => TicketPriority.Normal,
+            TicketPriorityOption.High => TicketPriority.High,
+            _ => throw new ArgumentException("Ogiltig prioritet.", nameof(newPriority))
+        };
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        ticket.UpdatePriority(priority);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    }
 
-            Technician? technician = null;
+    public async Task<bool> ChangeTicketStatus(Guid ticketId, TicketStatusOption newStatus)
+    {
+        var status = newStatus switch
+        {
+            TicketStatusOption.New => TicketStatus.New,
+            TicketStatusOption.InProgress => TicketStatus.InProgress,
+            TicketStatusOption.Resolved => TicketStatus.Resolved,
+            _ => throw new ArgumentException("Ogiltig status.", nameof(newStatus))
+        };
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        ticket.UpdateStatus(status);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    }
 
-            foreach (var item in technicians)
+    public async Task<TicketDetails> GetTicketById(Guid ticketId)
+    {
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        return new TicketDetails(ticket.Id, ticket.CustomerId, ticket.Title, ticket.Description,
+            ticket.Priority switch
             {
-                if (item.TechnicianId == technicianId)
-                {
-                    technician = item;
-                    break;
-                }
-            }
-            if (technician == null) { throw new ArgumentNullException(nameof(technician)); }
-
-            ticket.AssignTechnician(technician);
-            return await ticketHandlingRepository.SaveTicketAsync(ticket);
-            
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("An error occurred while adding the comment to the ticket.", ex);
-        }
-    }
-
-    public async Task<bool> ChangeTicketPriority(SupportTicket ticket, TicketPriority newPriority)
-    {
-        ticket.UpdatePriority(newPriority);
-        return await ticketHandlingRepository.SaveTicketAsync(ticket);
-
-    }
-
-    public async Task<bool> ChangeTicketStatus(SupportTicket ticket, TicketStatus newStatus)
-    {
-        ticket.UpdateStatus(newStatus);
-        return await ticketHandlingRepository.SaveTicketAsync(ticket);
-    }
-
-    public List<TicketComment> GetCommentsByTicket(SupportTicket ticket)
-    {            
-            return ticket.Comments.OrderBy(x => x.CreatedAt).ToList(); 
-    }
-
-    public async Task<SupportTicket> GetTicketById(Guid ticketId)
-    {
-        try
-        {
-            var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
-            return ticket;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("An error occurred while retrieving the ticket.", ex);
-        }
+                TicketPriority.Low => TicketPriorityOption.Low,
+                TicketPriority.Normal => TicketPriorityOption.Normal,
+                TicketPriority.High => TicketPriorityOption.High,
+                _ => throw new InvalidOperationException("Ogiltig prioritet.")
+            },
+            ticket.Status switch
+            {
+                TicketStatus.New => TicketStatusOption.New,
+                TicketStatus.InProgress => TicketStatusOption.InProgress,
+                TicketStatus.Resolved => TicketStatusOption.Resolved,
+                _ => throw new InvalidOperationException("Ogiltig status.")
+            },
+            ticket.CreatedAt, ticket.AssignedTechnicianId, ticket.AssignedTechnician?.TechnicianName,
+            ticket.Comments.OrderBy(item => item.CreatedAt)
+                .Select(item => new TicketCommentDetails(item.Id, item.Comment, item.CreatedAt)).ToList());
     }
 }

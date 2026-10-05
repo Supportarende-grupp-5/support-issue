@@ -1,15 +1,11 @@
-﻿using SupportIssue.Domain.Entities;
-using SupportIssue.Domain.Enums;
-
 namespace SupportIssue.Application.TicketHandling;
 
 public interface ITicketHandlingService
 {
-    public Task<SupportTicket> GetTicketById(Guid ticketId);
-    public Task<bool> AssignTechnician(SupportTicket ticket, int technicianId);
-    public Task<bool> ChangeTicketStatus(SupportTicket ticket, TicketStatus newStatus);
-    public Task<bool> AddCommentToTicket(SupportTicket ticket, string comment);
-    public Task<bool> ChangeTicketPriority(SupportTicket ticket, TicketPriority newPriority);
-    public List<TicketComment> GetCommentsByTicket(SupportTicket ticket);
-
+    Task<TicketDetails> GetTicketById(Guid ticketId);
+    IReadOnlyList<TechnicianOption> GetTechnicians();
+    Task<bool> AssignTechnician(Guid ticketId, int technicianId);
+    Task<bool> ChangeTicketStatus(Guid ticketId, TicketStatusOption newStatus);
+    Task<bool> AddCommentToTicket(Guid ticketId, string comment);
+    Task<bool> ChangeTicketPriority(Guid ticketId, TicketPriorityOption newPriority);
 }

@@ -7,9 +7,19 @@ namespace SupportIssue.Infrastructure.TicketHandling;
 
 public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
 {
-    private readonly string _ticketfilePath = Path.Combine(
+    private readonly string _ticketfilePath;
+
+    public JsonFileTicketHandlingRepository() : this(Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-        "SupportIssue", "tickets.json");
+        "SupportIssue", "tickets.json"))
+    {
+    }
+
+    public JsonFileTicketHandlingRepository(string ticketFilePath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ticketFilePath);
+        _ticketfilePath = Path.GetFullPath(ticketFilePath);
+    }
 
     private readonly JsonSerializerOptions _options = new()
     {
@@ -36,11 +46,21 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
     private async Task<List<TicketStorageModel>> ReadStorageModelsAsync()
     {
         if (!File.Exists(_ticketfilePath))
-            throw new FileNotFoundException("The ticket file was not found.", _ticketfilePath);
+            return [];
 
         var json = await File.ReadAllTextAsync(_ticketfilePath);
-        return JsonSerializer.Deserialize<List<TicketStorageModel>>(json, _options)
+        var models = JsonSerializer.Deserialize<List<TicketStorageModel>>(json, _options)
             ?? throw new JsonException("The ticket file must contain a list of tickets.");
+
+        // Kontrollera hela filen innan den får användas vid en sparning.
+        var ids = new HashSet<Guid>();
+        foreach (var model in models)
+        {
+            RestoreTicket(model);
+            if (!ids.Add(model.Id))
+                throw new JsonException("The ticket file contains duplicate ticket ids.");
+        }
+        return models;
     }
 
     private static SupportTicket RestoreTicket(TicketStorageModel model)
@@ -70,9 +90,51 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
             technician, comments);
     }
 
-    public Task<bool> SaveTicketAsync(SupportTicket ticket)
+    public async Task<bool> SaveTicketAsync(SupportTicket ticket)
     {
-        // Placeholder inför merge: uppdatera via id och skriv listan till fil.
-        return Task.FromResult(true);
+        ArgumentNullException.ThrowIfNull(ticket);
+        var models = await ReadStorageModelsAsync();
+        var model = new TicketStorageModel
+        {
+            Id = ticket.Id,
+            CustomerId = ticket.CustomerId,
+            Title = ticket.Title,
+            Description = ticket.Description,
+            Priority = ticket.Priority,
+            Status = ticket.Status,
+            CreatedAt = ticket.CreatedAt,
+            AssignedTechnicianId = ticket.AssignedTechnicianId,
+            Comments = ticket.Comments.Select(comment => new TicketCommentStorageModel
+            {
+                Id = comment.Id,
+                TicketId = comment.TicketId,
+                Comment = comment.Comment,
+                CreatedAt = comment.CreatedAt
+            }).ToList()
+        };
+        RestoreTicket(model);
+
+        var index = models.FindIndex(item => item.Id == ticket.Id);
+        if (index >= 0)
+            models[index] = model;
+        else
+            models.Add(model);
+
+        var json = JsonSerializer.Serialize(models, _options);
+        Directory.CreateDirectory(Path.GetDirectoryName(_ticketfilePath)!);
+        var temporaryPath = _ticketfilePath + "." + Guid.NewGuid() + ".tmp";
+        try
+        {
+            // Ersätt först när hela innehållet har skrivits till en separat fil.
+            await File.WriteAllTextAsync(temporaryPath, json);
+            File.Move(temporaryPath, _ticketfilePath, overwrite: true);
+        }
+        finally
+        {
+            try { File.Delete(temporaryPath); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
+        return true;
     }
 }
