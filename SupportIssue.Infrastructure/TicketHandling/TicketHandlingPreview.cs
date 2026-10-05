@@ -38,7 +38,6 @@ public static class TicketHandlingPreview
             "Kontorets skrivare tar emot utskrifter men skriver inte ut några sidor.",
             Guid.NewGuid(), TicketPriority.Normal);
         ticket.AssignTechnician(Technician.CreateTechnicianList().First());
-        ticket.UpdateStatus(TicketStatus.InProgress);
         ticket.AddComment("Kontrollerat att skrivaren är ansluten till nätverket.");
         ticket.AddComment("Startat om skrivaren och skickat en provutskrift.");
         return ticket;

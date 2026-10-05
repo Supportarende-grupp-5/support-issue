@@ -28,6 +28,7 @@ public partial class TicketDetailsViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(AddCommentCommand))]
     [NotifyCanExecuteChangedFor(nameof(AssignSelectedTechnicianCommand))]
     [NotifyCanExecuteChangedFor(nameof(ChangePriorityCommand))]
+    [NotifyCanExecuteChangedFor(nameof(CloseTicketCommand))]
     public partial bool IsBusy { get; private set; }
 
     public bool IsNotBusy => !IsBusy;
@@ -121,7 +122,7 @@ public partial class TicketDetailsViewModel : ObservableObject
                 return;
             }
             await RefreshAsync();
-            StatusMessage = "Handläggaren har tilldelats.";
+            StatusMessage = "Handläggaren har tilldelats. Ärendet är nu Pågående.";
         }
         catch (ArgumentException)
         {
@@ -130,6 +131,40 @@ public partial class TicketDetailsViewModel : ObservableObject
         catch (Exception)
         {
             StatusMessage = "Handläggaren kunde inte tilldelas. Kontrollera datafilen och försök igen.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private bool CanCloseTicket() => !IsBusy && currentTicket != null
+        && currentTicket.AssignedTechnicianId.HasValue
+        && currentTicket.Status != TicketStatusOption.Resolved;
+
+    [RelayCommand(CanExecute = nameof(CanCloseTicket))]
+    private async Task CloseTicketAsync()
+    {
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        try
+        {
+            var result = await ticketHandlingService.CloseTicket(CurrentTicketId);
+            if (!result)
+            {
+                StatusMessage = "Ärendet kunde inte stängas.";
+                return;
+            }
+            await RefreshAsync();
+            StatusMessage = "Ärendet har stängts och är nu Löst.";
+        }
+        catch (InvalidOperationException)
+        {
+            StatusMessage = "Tilldela en handläggare innan ärendet stängs.";
+        }
+        catch (Exception)
+        {
+            StatusMessage = "Ärendet kunde inte stängas. Kontrollera datafilen och försök igen.";
         }
         finally
         {
@@ -197,6 +232,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         AddCommentCommand.NotifyCanExecuteChanged();
         AssignSelectedTechnicianCommand.NotifyCanExecuteChanged();
         ChangePriorityCommand.NotifyCanExecuteChanged();
+        CloseTicketCommand.NotifyCanExecuteChanged();
     }
 
 }

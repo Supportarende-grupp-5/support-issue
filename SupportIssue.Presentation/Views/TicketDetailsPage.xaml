@@ -37,6 +37,9 @@
                 Lägg till kommentar
             </Button>
             <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Margin="4" />
+            <Button Command="{Binding CloseTicketCommand}" Margin="2">
+                Stäng ärende
+            </Button>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

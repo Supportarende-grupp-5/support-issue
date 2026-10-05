@@ -10,6 +10,12 @@ public partial class SupportTicket
         if (technician.TechnicianId is null or <= 0)
             throw new ArgumentException("A technician must have a valid id.", nameof(technician));
         this.AssignedTechnician = technician;
+        this.Status = TicketStatus.InProgress;
+    }
+
+    public void Close()
+    {
+        UpdateStatus(TicketStatus.Resolved);
     }
 
     public void UpdateStatus(TicketStatus status)

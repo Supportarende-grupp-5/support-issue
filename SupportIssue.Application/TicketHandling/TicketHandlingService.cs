@@ -28,6 +28,13 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
         return await ticketHandlingRepository.SaveTicketAsync(ticket);
     }
 
+    public async Task<bool> CloseTicket(Guid ticketId)
+    {
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        ticket.Close();
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    }
+
     public async Task<bool> ChangeTicketPriority(Guid ticketId, TicketPriorityOption newPriority)
     {
         var priority = newPriority switch
