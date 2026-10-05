@@ -45,7 +45,12 @@ public class JsonCustomerRepository : ICustomerRepository
     {
         try
         {
-            string json = JsonSerializer.Serialize(customers);
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            string json = JsonSerializer.Serialize(customers, options);
             File.WriteAllText(_filePath, json);
         }
         catch (IOException)
