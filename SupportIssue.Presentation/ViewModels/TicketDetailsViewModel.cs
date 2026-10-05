@@ -48,6 +48,7 @@ public class TicketDetailsViewModel : INotifyPropertyChanged
         Technicians = service.GetTechnicians();
         Comments = new ObservableCollection<TicketCommentDetails>(ticket.Comments);
         SelectedTechnician = Technicians.FirstOrDefault(item => item.TechnicianId == ticket.AssignedTechnicianId);
+        SelectedPriority = ticket.Priority;
     }
 
     public async Task<bool> AddCommentAsync()
@@ -68,6 +69,26 @@ public class TicketDetailsViewModel : INotifyPropertyChanged
         if (result) await RefreshAsync();
         return result;
     }
+    public async Task<bool> ChangePriorityAsync(TicketPriorityOption newPriority)
+    {
+        var result = await ticketHandlingService.ChangeTicketPriority(currentTicket.Id, newPriority);
+        if (result) await RefreshAsync();
+        return result;
+    }
+    private TicketPriorityOption selectedPriority;
+
+    public TicketPriorityOption SelectedPriority
+    {
+        get => selectedPriority;
+        set
+        {
+            if (selectedPriority == value) return;
+            selectedPriority = value;
+            OnPropertyChanged();
+        }
+    }
+    public IReadOnlyList<TicketPriorityOption> PriorityOptions { get; }
+    = Enum.GetValues<TicketPriorityOption>();
 
     private async Task RefreshAsync()
     {
@@ -80,6 +101,7 @@ public class TicketDetailsViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(Status));
         OnPropertyChanged(nameof(Priority));
         OnPropertyChanged(nameof(TechnicianName));
+        SelectedPriority = currentTicket.Priority;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
