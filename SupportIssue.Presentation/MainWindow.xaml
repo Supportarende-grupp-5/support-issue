@@ -21,9 +21,8 @@
             <Setter Property="Padding" Value="24,14"/>
             <Setter Property="Margin" Value="0,0,8,0"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
@@ -129,6 +128,8 @@
                     Background="Transparent"
                     BorderThickness="0"
                     Padding="0,18,0,0"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
                     ItemContainerStyle="{StaticResource ModernTabItem}">
 
             <TabItem>
@@ -160,7 +161,9 @@
                     </StackPanel>
                 </TabItem.Header>
 
-                <ContentControl x:Name="TicketContent"/>
+                <ContentControl x:Name="TicketContent"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"/>
             </TabItem>
 
         </TabControl>
