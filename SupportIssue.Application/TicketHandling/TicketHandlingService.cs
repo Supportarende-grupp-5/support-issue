@@ -85,4 +85,16 @@ public class TicketHandlingService(ITicketHandlingRepository ticketHandlingRepos
             ticket.Comments.OrderBy(item => item.CreatedAt)
                 .Select(item => new TicketCommentDetails(item.Id, item.Comment, item.CreatedAt)).ToList());
     }
+    public async Task<bool> ChangeTicketTitle(Guid ticketId, string title)
+    {
+        var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+        ticket.UpdateTitle(title);
+        return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    }
+    public async Task<bool> ChangeTicketDescription(Guid ticketId, string description)
+    {
+            var ticket = await ticketHandlingRepository.GetTicketByIdAsync(ticketId);
+            ticket.UpdateDescription(description);
+            return await ticketHandlingRepository.SaveTicketAsync(ticket);
+    }
 }

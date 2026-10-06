@@ -57,4 +57,19 @@ public partial class SupportTicket
         TicketComment comment = new TicketComment(this.Id, commentText);
         Comments.Add(comment);
     }
+    public void UpdateTitle(string title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+            throw new ArgumentException("Rubrik måste anges.", nameof(title));
+
+        Title = title.Trim();
+    }
+    public void UpdateDescription(string description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new ArgumentException("Description cannot be null or whitespace.", nameof(description));
+        }
+        Description = description.Trim();
+    }
 }

@@ -2,6 +2,9 @@ using SupportIssue.Application.TicketHandling;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
 
 namespace SupportIssue.Presentation.ViewModels;
 
@@ -24,11 +27,21 @@ public partial class TicketDetailsViewModel : ObservableObject
     public partial string NewCommentText { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(UpdateTitleCommand))]
+    public partial string UpdateTitleText { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(UpdateDescriptionCommand))]
+    public partial string UpdateDescriptionText { get; set; } = string.Empty;
+
+    [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     [NotifyCanExecuteChangedFor(nameof(AddCommentCommand))]
     [NotifyCanExecuteChangedFor(nameof(AssignSelectedTechnicianCommand))]
     [NotifyCanExecuteChangedFor(nameof(ChangePriorityCommand))]
     [NotifyCanExecuteChangedFor(nameof(CloseTicketCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UpdateTitleCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UpdateDescriptionCommand))]
     public partial bool IsBusy { get; private set; }
 
     public bool IsNotBusy => !IsBusy;
@@ -53,13 +66,13 @@ public partial class TicketDetailsViewModel : ObservableObject
         StatusMessage = string.Empty;
         currentTicket = null;
         NewCommentText = string.Empty;
-        UpdateDisplayedTicket();
+        UpdateDisplayedTicket(resetEditing: true);
         try
         {
             if (ticketId == Guid.Empty)
                 throw new ArgumentException("Välj ett ärende med ett giltigt id.", nameof(ticketId));
             currentTicket = await ticketHandlingService.GetTicketById(ticketId);
-            UpdateDisplayedTicket();
+            UpdateDisplayedTicket(resetEditing: true);
         }
         catch (Exception)
         {
@@ -98,6 +111,102 @@ public partial class TicketDetailsViewModel : ObservableObject
         catch (Exception)
         {
             StatusMessage = "Kommentaren kunde inte läggas till. Kontrollera datafilen och försök igen.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private bool CanChangeTitle() => currentTicket != null && !IsBusy
+        && !string.IsNullOrWhiteSpace(UpdateTitleText);
+
+    [RelayCommand(CanExecute = nameof(CanChangeTitle))]
+    private async Task UpdateTitleAsync()
+    {
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        try
+        {
+            var result = await ticketHandlingService.ChangeTicketTitle(CurrentTicketId, UpdateTitleText);
+            if (!result)
+            {
+                StatusMessage = "Rubriken kunde inte uppdateras.";
+                return;
+            }
+            await RefreshAsync();
+            UpdateTitleText = Title;
+            StatusMessage = "Rubriken har uppdaterats.";
+        }
+        catch (ArgumentException)
+        {
+            StatusMessage = "Rubriken kunde inte uppdateras. Kontrollera rubriken och uppgifterna i datafilen.";
+        }
+        catch (KeyNotFoundException)
+        {
+            StatusMessage = "Ärendet kunde inte hittas.";
+        }
+        catch (JsonException)
+        {
+            StatusMessage = "Datafilen innehåller felaktiga uppgifter. Rubriken kunde inte uppdateras.";
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            Debug.WriteLine(ex);
+            StatusMessage = "Rubriken kunde inte sparas. Kontrollera datafilen och åtkomsten.";
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            StatusMessage = "Ett oväntat fel uppstod när rubriken skulle uppdateras.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private bool CanChangeDescription() => currentTicket != null && !IsBusy
+        && !string.IsNullOrWhiteSpace(UpdateDescriptionText);
+
+    [RelayCommand(CanExecute = nameof(CanChangeDescription))]
+    private async Task UpdateDescriptionAsync()
+    {
+        IsBusy = true;
+        StatusMessage = string.Empty;
+        try
+        {
+            var result = await ticketHandlingService.ChangeTicketDescription(CurrentTicketId, UpdateDescriptionText);
+            if (!result)
+            {
+                StatusMessage = "Beskrivningen kunde inte uppdateras.";
+                return;
+            }
+            await RefreshAsync();
+            UpdateDescriptionText = Description;
+            StatusMessage = "Beskrivningen har uppdaterats.";
+        }
+        catch (ArgumentException)
+        {
+            StatusMessage = "Beskrivningen kunde inte uppdateras. Kontrollera beskrivningen och uppgifterna i datafilen.";
+        }
+        catch (KeyNotFoundException)
+        {
+            StatusMessage = "Ärendet kunde inte hittas.";
+        }
+        catch (JsonException)
+        {
+            StatusMessage = "Datafilen innehåller felaktiga uppgifter. Beskrivningen kunde inte uppdateras.";
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            Debug.WriteLine(ex);
+            StatusMessage = "Beskrivningen kunde inte sparas. Kontrollera datafilen och åtkomsten.";
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            StatusMessage = "Ett oväntat fel uppstod när beskrivningen skulle uppdateras.";
         }
         finally
         {
@@ -216,7 +325,7 @@ public partial class TicketDetailsViewModel : ObservableObject
         UpdateDisplayedTicket();
     }
 
-    private void UpdateDisplayedTicket()
+    private void UpdateDisplayedTicket(bool resetEditing = false)
     {
         Comments.Clear();
         if (currentTicket != null)
@@ -228,11 +337,18 @@ public partial class TicketDetailsViewModel : ObservableObject
         OnPropertyChanged(nameof(Status));
         OnPropertyChanged(nameof(Priority));
         OnPropertyChanged(nameof(TechnicianName));
+        if (resetEditing)
+        {
+            UpdateTitleText = Title;
+            UpdateDescriptionText = Description;
+        }
         SelectedPriority = Priority;
         AddCommentCommand.NotifyCanExecuteChanged();
         AssignSelectedTechnicianCommand.NotifyCanExecuteChanged();
         ChangePriorityCommand.NotifyCanExecuteChanged();
         CloseTicketCommand.NotifyCanExecuteChanged();
+        UpdateTitleCommand.NotifyCanExecuteChanged();
+        UpdateDescriptionCommand.NotifyCanExecuteChanged();
     }
 
 }

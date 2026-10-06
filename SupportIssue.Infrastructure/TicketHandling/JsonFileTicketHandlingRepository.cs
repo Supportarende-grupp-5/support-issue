@@ -52,7 +52,6 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
         var models = JsonSerializer.Deserialize<List<TicketStorageModel>>(json, _options)
             ?? throw new JsonException("The ticket file must contain a list of tickets.");
 
-        // Kontrollera hela filen innan den får användas vid en sparning.
         var ids = new HashSet<Guid>();
         foreach (var model in models)
         {
@@ -125,7 +124,6 @@ public class JsonFileTicketHandlingRepository : ITicketHandlingRepository
         var temporaryPath = _ticketfilePath + "." + Guid.NewGuid() + ".tmp";
         try
         {
-            // Ersätt först när hela innehållet har skrivits till en separat fil.
             await File.WriteAllTextAsync(temporaryPath, json);
             File.Move(temporaryPath, _ticketfilePath, overwrite: true);
         }

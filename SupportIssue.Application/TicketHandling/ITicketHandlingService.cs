@@ -9,4 +9,6 @@ public interface ITicketHandlingService
     Task<bool> ChangeTicketStatus(Guid ticketId, TicketStatusOption newStatus);
     Task<bool> AddCommentToTicket(Guid ticketId, string comment);
     Task<bool> ChangeTicketPriority(Guid ticketId, TicketPriorityOption newPriority);
+    Task<bool> ChangeTicketTitle(Guid ticketId, string title);
+    Task<bool> ChangeTicketDescription(Guid ticketID, string description);
 }
