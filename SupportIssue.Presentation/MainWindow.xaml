@@ -9,7 +9,15 @@
         WindowStartupLocation="CenterScreen"
         Background="#F3F6FB">
 
-    <Grid>
-        <ContentControl x:Name="MainContent"/>
+    <Grid Margin="16">
+        <TabControl>
+            <TabItem Header="Customers">
+                <ContentControl x:Name="CustomerContent"/>
+            </TabItem>
+
+            <TabItem Header="Register ticket">
+                <ContentControl x:Name="TicketContent"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
