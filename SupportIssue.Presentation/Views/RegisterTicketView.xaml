@@ -258,6 +258,7 @@
                                 Margin="0,24"/>
 
                         <Button x:Name="RegisterButton"
+                                Click="RegisterButton_Click"
                                 Content="Register ticket"
                                 Style="{StaticResource PrimaryButton}"
                                 HorizontalAlignment="Right"
