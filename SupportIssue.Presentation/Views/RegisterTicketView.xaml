@@ -230,6 +230,8 @@
                                Target="{Binding ElementName=CustomerComboBox}"/>
 
                         <ComboBox x:Name="CustomerComboBox"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
                                   AutomationProperties.Name="Customer"
                                   Margin="0,0,0,20"/>
 

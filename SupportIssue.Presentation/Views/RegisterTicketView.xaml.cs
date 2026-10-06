@@ -1,26 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using SupportIssue.Application.Interfaces;
+using SupportIssue.Domain.Enums;
 
-namespace SupportIssue.Presentation.Views
+namespace SupportIssue.Presentation.Views;
+
+public partial class RegisterTicketView : UserControl
 {
-    /// <summary>
-    /// Interaction logic for RegisterTicketView.xaml
-    /// </summary>
-    public partial class RegisterTicketView : UserControl
+    private readonly ITicketService _ticketService;
+
+    public RegisterTicketView(ITicketService ticketService)
     {
-        public RegisterTicketView()
+        ArgumentNullException.ThrowIfNull(ticketService);
+
+        InitializeComponent();
+
+        _ticketService = ticketService;
+
+        PriorityComboBox.ItemsSource =
+            Enum.GetValues<TicketPriority>();
+
+        PriorityComboBox.SelectedItem = TicketPriority.Normal;
+
+        Loaded += RegisterTicketView_Loaded;
+    }
+
+    private void RegisterTicketView_Loaded(
+        object sender,
+        RoutedEventArgs e)
+    {
+        try
         {
-            InitializeComponent();
+            CustomerComboBox.ItemsSource =
+                _ticketService.GetCustomers();
+
+            FeedbackTextBlock.Text =
+                CustomerComboBox.Items.Count == 0
+                    ? "No customers available. Register a customer first."
+                    : string.Empty;
+        }
+        catch (Exception ex) when (
+            ex is InvalidOperationException ||
+            ex is System.IO.IOException ||
+            ex is UnauthorizedAccessException)
+        {
+            CustomerComboBox.ItemsSource = null;
+
+            FeedbackTextBlock.Text =
+                "Customers could not be loaded. Check the customer file and access permissions.";
         }
     }
 }
