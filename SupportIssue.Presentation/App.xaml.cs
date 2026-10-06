@@ -2,6 +2,10 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using SupportIssue.Application.Customers;
 using SupportIssue.Infrastructure.Customers;
+using SupportIssue.Application.Interfaces;
+using SupportIssue.Application.Services;
+using SupportIssue.Infrastructure.Repositories;
+using SupportIssue.Presentation.Views;
 
 namespace SupportIssue.Presentation;
 
@@ -20,6 +24,13 @@ public partial class App : System.Windows.Application
 
         services.AddSingleton<CustomerService>();
 
+        services.AddSingleton<ITicketRepository>(
+    new JsonTicketRepository("tickets.json"));
+
+        services.AddSingleton<ITicketService, TicketService>();
+
+        services.AddTransient<RegisterTicketView>();
+
         _serviceProvider = services.BuildServiceProvider();
     }
 
@@ -30,7 +41,11 @@ public partial class App : System.Windows.Application
         var customerService =
             _serviceProvider.GetRequiredService<CustomerService>();
 
-        var mainWindow = new MainWindow(customerService);
+        var registerTicketView =
+    _serviceProvider.GetRequiredService<RegisterTicketView>();
+
+        MainWindow mainWindow =
+            new MainWindow(customerService, registerTicketView);
 
         MainWindow = mainWindow;
         mainWindow.Show();
