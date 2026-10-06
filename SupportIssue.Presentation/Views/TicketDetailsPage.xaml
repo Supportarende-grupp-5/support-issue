@@ -21,6 +21,7 @@
         <StackPanel Grid.Row="0">
             <TextBlock Text="{Binding Title}" Margin="4" />
             <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="4" />
+            <TextBlock Text="{Binding CustomerName}" Margin="4" />
             <TextBlock Text="{Binding Status}" Margin="4" />
             <TextBlock Text="{Binding Priority}" Margin="4" />
             <TextBlock Text="{Binding TechnicianName}" Margin="4" />

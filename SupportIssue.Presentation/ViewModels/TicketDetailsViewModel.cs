@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using System.Runtime.CompilerServices;
 
 namespace SupportIssue.Presentation.ViewModels;
 
@@ -14,6 +15,11 @@ public partial class TicketDetailsViewModel : ObservableObject
     private readonly ITicketHandlingService ticketHandlingService;
     public string Title => currentTicket?.Title ?? string.Empty;
     public string Description => currentTicket?.Description ?? string.Empty;
+
+
+    public string CustomerName => GetCustomerName(currentTicket?.CustomerId);
+
+
     public TicketStatusOption Status => currentTicket?.Status ?? TicketStatusOption.New;
     public TicketPriorityOption Priority => currentTicket?.Priority ?? TicketPriorityOption.Normal;
     public string TechnicianName => currentTicket?.TechnicianName ?? "Ej tilldelad";
@@ -349,6 +355,12 @@ public partial class TicketDetailsViewModel : ObservableObject
         CloseTicketCommand.NotifyCanExecuteChanged();
         UpdateTitleCommand.NotifyCanExecuteChanged();
         UpdateDescriptionCommand.NotifyCanExecuteChanged();
+    }
+    
+    private string GetCustomerName(Guid customerId)
+    {
+        var customer = customerService.GetCustomerById(customerId);
+        return customer?.Name ?? "Okänd kund";
     }
 
 }
