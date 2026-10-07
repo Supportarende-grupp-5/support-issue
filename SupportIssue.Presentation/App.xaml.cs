@@ -1,9 +1,10 @@
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using SupportIssue.Application.Customers;
-using SupportIssue.Infrastructure.Customers;
 using SupportIssue.Application.Interfaces;
 using SupportIssue.Application.Services;
+using SupportIssue.Application.TicketHandling;
+using SupportIssue.Infrastructure.Customers;
 using SupportIssue.Infrastructure.Repositories;
 using SupportIssue.Presentation.Views;
 
@@ -17,18 +18,28 @@ public partial class App : System.Windows.Application
     {
         var services = new ServiceCollection();
 
-        string customerFilePath = "customer.json";
-
+        // Kundlagring och kundtjänst.
         services.AddSingleton<ICustomerRepository>(
-            new JsonCustomerRepository(customerFilePath));
+            new JsonCustomerRepository("customer.json"));
 
         services.AddSingleton<CustomerService>();
 
-        services.AddSingleton<ITicketRepository>(
-    new JsonTicketRepository("tickets.json"));
+        // Ett gemensamt repository för båda ärendedelarna.
+        services.AddSingleton<JsonTicketRepository>(
+            new JsonTicketRepository("tickets.json"));
 
+        services.AddSingleton<ITicketRepository>(provider =>
+            provider.GetRequiredService<JsonTicketRepository>());
+
+        services.AddSingleton<ITicketHandlingRepository>(provider =>
+            provider.GetRequiredService<JsonTicketRepository>());
+
+        // Tjänster för registrering och ärendehantering.
         services.AddSingleton<ITicketService, TicketService>();
 
+        services.AddSingleton<ITicketHandlingService, TicketHandlingService>();
+
+        // Registreringsvyn.
         services.AddTransient<RegisterTicketView>();
 
         _serviceProvider = services.BuildServiceProvider();
@@ -42,10 +53,23 @@ public partial class App : System.Windows.Application
             _serviceProvider.GetRequiredService<CustomerService>();
 
         var registerTicketView =
-    _serviceProvider.GetRequiredService<RegisterTicketView>();
+            _serviceProvider.GetRequiredService<RegisterTicketView>();
 
-        MainWindow mainWindow =
-            new MainWindow(customerService, registerTicketView);
+        var ticketRepository =
+            _serviceProvider.GetRequiredService<ITicketHandlingRepository>();
+
+        var ticketHandlingService =
+            _serviceProvider.GetRequiredService<ITicketHandlingService>();
+
+        var customerRepository =
+            _serviceProvider.GetRequiredService<ICustomerRepository>();
+
+        var mainWindow = new MainWindow(
+            customerService,
+            registerTicketView,
+            ticketRepository,
+            ticketHandlingService,
+            customerRepository);
 
         MainWindow = mainWindow;
         mainWindow.Show();

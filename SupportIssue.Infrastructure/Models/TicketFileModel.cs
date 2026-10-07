@@ -1,4 +1,5 @@
 ﻿using SupportIssue.Domain.Enums;
+using SupportIssue.Infrastructure.TicketHandling;
 
 namespace SupportIssue.Infrastructure.Models;
 
@@ -15,5 +16,7 @@ public class TicketFileModel
 
     public DateTimeOffset CreatedAt { get; set; }
 
+    public int? AssignedTechnicianId { get; set; }
 
+    public List<TicketCommentStorageModel> Comments { get; set; } = [];
 }
