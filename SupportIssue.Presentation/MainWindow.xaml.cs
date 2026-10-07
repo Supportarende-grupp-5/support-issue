@@ -10,6 +10,16 @@ using SupportIssue.Presentation.Views;
 namespace SupportIssue.Presentation;
 
 public partial class MainWindow : Window
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using SupportIssue.Application.Customers;
+
+namespace SupportIssue.Presentation
 {
     private readonly ITicketHandlingRepository _ticketRepository;
     private readonly ITicketHandlingService _ticketHandlingService;
@@ -113,6 +123,12 @@ public partial class MainWindow : Window
         if (TicketsListBox.SelectedItem is not SupportTicket ticket)
         {
             return;
+        private readonly CustomerService _customerService;
+        public MainWindow(CustomerService customerService)
+        {
+            InitializeComponent();
+
+            _customerService = customerService;
         }
 
         SetLoading(true);
