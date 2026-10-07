@@ -3,4 +3,5 @@
   <Project Path="SupportIssue.Domain/SupportIssue.Domain.csproj" />
   <Project Path="SupportIssue.Infrastructure/SupportIssue.Infrastructure.csproj" />
   <Project Path="SupportIssue.Presentation/SupportIssue.Presentation.csproj" />
+  <Project Path="SupportIssue.Tests/SupportIssue.Tests.csproj" Id="201ef597-869c-4de9-9e62-43fd6090f34c" />
 </Solution>

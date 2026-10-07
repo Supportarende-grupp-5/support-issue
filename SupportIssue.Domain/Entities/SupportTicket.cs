@@ -1,0 +1,62 @@
+﻿using SupportIssue.Domain.Enums;
+
+namespace SupportIssue.Domain.Entities;
+
+public partial class SupportTicket
+{
+    public Guid Id { get; private set; }
+    public Guid CustomerId { get; private set; }
+
+    public string Title { get; private set; }
+    public string Description { get; private set; }
+
+    public TicketPriority Priority { get; private set; }
+    public TicketStatus Status { get; private set; }
+
+    public DateTimeOffset CreatedAt { get; private set; }
+
+    public Technician? AssignedTechnician { get; private set; }
+
+    public int? AssignedTechnicianId =>
+        AssignedTechnician?.TechnicianId;
+
+    public List<TicketComment> Comments { get; private set; }
+
+    public SupportTicket(
+        string title,
+        string description,
+        Guid customerId,
+        TicketPriority ticketPriority)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            throw new ArgumentException("Title is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new ArgumentException("Description is required.");
+        }
+
+        if (customerId == Guid.Empty)
+        {
+            throw new ArgumentException("A customer must be selected.");
+        }
+
+        if (!Enum.IsDefined(ticketPriority))
+        {
+            throw new ArgumentException("Invalid priority.");
+        }
+
+        Id = Guid.NewGuid();
+        CreatedAt = DateTimeOffset.UtcNow;
+        Status = TicketStatus.New;
+
+        Title = title.Trim();
+        Description = description.Trim();
+        CustomerId = customerId;
+        Priority = ticketPriority;
+
+        Comments = new List<TicketComment>();
+    }
+}
