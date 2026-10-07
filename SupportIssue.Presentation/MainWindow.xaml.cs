@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SupportIssue.Application.Customers;
 
 namespace SupportIssue.Presentation
 {
@@ -16,9 +17,12 @@ namespace SupportIssue.Presentation
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly CustomerService _customerService;
+        public MainWindow(CustomerService customerService)
         {
             InitializeComponent();
+
+            _customerService = customerService;
         }
     }
 }
