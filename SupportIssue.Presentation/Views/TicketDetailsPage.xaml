@@ -6,6 +6,8 @@
       xmlns:local="clr-namespace:SupportIssue.Presentation.Views"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="450"
+      Background="White"
+      Foreground="#0F172A"
       Title="TicketDetailsPage">
 
 
@@ -19,7 +21,12 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
-            <TextBlock Text="{Binding Title}" Margin="4" />
+            <TextBlock Text="{Binding Title}" 
+                      Foreground="#0F172A"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       Margin="4" />
             <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="4" />
             <TextBlock Text="{Binding CustomerName}" Margin="4" />
             <TextBlock Text="{Binding Status}" Margin="4" />
