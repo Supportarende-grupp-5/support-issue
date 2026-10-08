@@ -65,8 +65,8 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="MinHeight" Value="46"/>
             <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
         <!-- Registreringsknappen -->
@@ -77,6 +77,7 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="24,14"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="10"/>
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -130,7 +131,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
@@ -142,16 +143,15 @@
             <TextBlock Text="{Binding TechnicianName}" Margin="4" />
 
             <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Margin="4" />
-            <Button Command="{Binding CloseTicketCommand}" Margin="2">
+            <Button Command="{Binding CloseTicketCommand}" Style="{StaticResource RegisterButtonStyle}">
                 Stäng ärende
             </Button>
         </StackPanel>
         <StackPanel Grid.Column="0" Grid.Row="1">
-            <TextBlock Text="Rubrik" Margin="4" />
+            <TextBlock Text="Rubrik" Margin="4" Style="{StaticResource FieldLabel}" />
             <TextBox x:Name="UpdateTitleTextBox"
-                     Text="{Binding UpdateTitleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     Margin="4" />
-            <Button x:Name="UpdateTitleButton" Command="{Binding UpdateTitleCommand}" Margin="2">
+                     Text="{Binding UpdateTitleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="4" />
+            <Button x:Name="UpdateTitleButton" Command="{Binding UpdateTitleCommand}" Style="{StaticResource RegisterButtonStyle}">
                 Uppdatera rubrik
             </Button>
 
@@ -160,7 +160,7 @@
                      Text="{Binding UpdateDescriptionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" MaxHeight="120"
                      VerticalScrollBarVisibility="Auto" Margin="4" />
-            <Button x:Name="UpdateDescriptionButton" Command="{Binding UpdateDescriptionCommand}" Margin="2">
+            <Button x:Name="UpdateDescriptionButton" Command="{Binding UpdateDescriptionCommand}"  Style="{StaticResource RegisterButtonStyle}">
                 Uppdatera beskrivning
             </Button>
         </StackPanel>
@@ -179,7 +179,8 @@
         <TextBox x:Name="NewCommentTextBox" Text="{Binding NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4" />
         <Button Name="AddCommentButton"
     Margin="2"
-    Command="{Binding AddCommentCommand}">
+    Command="{Binding AddCommentCommand}"
+                Style="{StaticResource RegisterButtonStyle}">
             Lägg till kommentar
         </Button>
         </StackPanel>
@@ -189,13 +190,13 @@
                     ItemsSource="{Binding Technicians}"
                     DisplayMemberPath="TechnicianName"
                     SelectedItem="{Binding SelectedTechnician, Mode=TwoWay}" />
-            <Button x:Name="AssignTechnicianButton" Command="{Binding AssignSelectedTechnicianCommand}">
+            <Button x:Name="AssignTechnicianButton" Command="{Binding AssignSelectedTechnicianCommand}" Style="{StaticResource RegisterButtonStyle}">
                 Tilldela handläggare
             </Button>
             <ComboBox
                     ItemsSource="{Binding PriorityOptions}"
                     SelectedItem="{Binding SelectedPriority, Mode=TwoWay}" />
-            <Button x:Name="AssignPriorityButton" Command="{Binding ChangePriorityCommand}">
+            <Button x:Name="AssignPriorityButton" Command="{Binding ChangePriorityCommand}" Style="{StaticResource RegisterButtonStyle}">
                 Tilldela prioritet
             </Button>
         </StackPanel>
