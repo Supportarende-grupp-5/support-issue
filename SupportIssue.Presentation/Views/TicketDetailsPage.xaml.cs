@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace SupportIssue.Presentation.Views;
 
-public partial class TicketDetailsPage : Page
+public partial class TicketDetailsPage : UserControl
 {
     public TicketDetailsViewModel ViewModel { get; }
 
