@@ -18,7 +18,6 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Padding" Value="24,14"/>
             <Setter Property="Margin" Value="0,0,8,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
 
@@ -121,150 +120,163 @@
     </Window.Resources>
 
     <Grid Margin="28">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0" Margin="0,0,0,24">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <Border Width="52"
-                    Height="52"
-                    Background="#2563EB"
-                    CornerRadius="16"
-                    Margin="0,0,16,0">
-
-                <TextBlock Text="S"
-                           Foreground="White"
-                           FontSize="28"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
-            </Border>
-
-            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock Text="SupportIssue"
-                           FontSize="26"
-                           FontWeight="Bold"
-                           Foreground="White"/>
-
-                <TextBlock Text="Manage customers and support tickets"
-                           FontSize="13"
-                           Foreground="#CBD5E1"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
-        </Grid>
-
-        <TabControl Grid.Row="1"
-                    Background="Transparent"
+        <TabControl Background="Transparent"
                     BorderThickness="0"
-                    Padding="0,18,0,0"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
                     ItemContainerStyle="{StaticResource ModernTabItem}">
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid KeyboardNavigation.TabNavigation="Local">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-            <TabItem>
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE716;"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,10,0"/>
-                        <TextBlock Text="Customers"/>
-                    </StackPanel>
-                </TabItem.Header>
+                        <StackPanel Grid.Row="0"
+                                    Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,24,0">
+                            <Border Width="52"
+                                    Height="52"
+                                    Background="#2563EB"
+                                    CornerRadius="16"
+                                    Margin="0,0,16,0">
+                                <TextBlock Text="S"
+                                           Foreground="White"
+                                           FontSize="28"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="SupportIssue"
+                                       FontSize="26"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
 
-                <ContentControl x:Name="CustomerContent"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"/>
-            </TabItem>
+                        <TabPanel Grid.Row="0"
+                                  Grid.Column="1"
+                                  IsItemsHost="True"
+                                  VerticalAlignment="Center"
+                                  KeyboardNavigation.TabIndex="1"
+                                  KeyboardNavigation.DirectionalNavigation="Contained"/>
 
-            <TabItem>
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE710;"
-                                   FontFamily="Segoe MDL2 Assets"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,10,0"/>
-                        <TextBlock Text="Register ticket"/>
-                    </StackPanel>
-                </TabItem.Header>
+                        <ContentPresenter x:Name="PART_SelectedContentHost"
+                                          Grid.Row="1"
+                                          Grid.ColumnSpan="2"
+                                          ContentSource="SelectedContent"
+                                          Margin="0,24,0,0"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"/>
+                    </Grid>
+                </ControlTemplate>
+            </TabControl.Template>
 
-                <ContentControl x:Name="TicketContent"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"/>
-            </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE716;"
+                           FontFamily="Segoe MDL2 Assets"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"/>
+                            <TextBlock Text="Customers"/>
+                        </StackPanel>
+                    </TabItem.Header>
 
-            <!-- Aktiveras när ärendehanteringen har kopplats in -->
-            <TabItem x:Name="TicketHandlingTab"
-         Header="Ticket handling">
+                    <ContentControl x:Name="CustomerContent"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"/>
+                </TabItem>
 
-                <Grid Margin="0,8,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <TabItem>
+                    <TabItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;"
+                           FontFamily="Segoe MDL2 Assets"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"/>
+                            <TextBlock Text="Register ticket"/>
+                        </StackPanel>
+                    </TabItem.Header>
 
-                    <Border Grid.Column="0"
-                Background="White"
-                CornerRadius="12"
-                Padding="16">
+                    <ContentControl x:Name="TicketContent"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"/>
+                </TabItem>
 
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                <!-- Aktiveras när ärendehanteringen har kopplats in -->
+                <TabItem x:Name="TicketHandlingTab"
+ Header="Ticket handling">
 
-                            <TextBlock Text="Support tickets"
-                           FontSize="20"
-                           FontWeight="SemiBold"
-                           Foreground="#0B1F3A"
-                           Margin="0,0,0,12"/>
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="280"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Button x:Name="RefreshTicketsButton"
-                        Grid.Row="1"
-                        Content="Refresh tickets"
-                        Padding="12,8"
-                        Margin="0,0,0,12"
-                        Click="RefreshTicketsButton_Click"
-                        Style="{StaticResource RegisterButtonStyle}"/>
+                        <Border Grid.Column="0"
+        Background="White"
+        CornerRadius="12"
+        Padding="16">
 
-                            <ListBox x:Name="TicketsListBox"
-                         Grid.Row="2"
-                         DisplayMemberPath="Title"
-                         HorizontalContentAlignment="Stretch"
-                         BorderThickness="0"
-                         SelectionChanged="TicketsListBox_SelectionChanged"
-                         AutomationProperties.Name="Support tickets"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <TextBlock x:Name="TicketListMessage"
-                           Grid.Row="3"
-                           Foreground="#475569"
-                           TextWrapping="Wrap"
-                           Margin="0,12,0,0"/>
-                        </Grid>
-                    </Border>
+                                <TextBlock Text="Support tickets"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   Foreground="#0B1F3A"
+                   Margin="0,0,0,12"/>
 
-                    <Border Grid.Column="2"
-                Background="White"
-                CornerRadius="12"
-                Padding="16">
+                                <Button x:Name="RefreshTicketsButton"
+                Grid.Row="1"
+                Content="Refresh tickets"
+                Padding="12,8"
+                Margin="0,0,0,12"
+                Click="RefreshTicketsButton_Click"
+                Style="{StaticResource RegisterButtonStyle}"/>
 
-                        <Frame x:Name="DetailsFrame"
-                   NavigationUIVisibility="Hidden"
-                   HorizontalContentAlignment="Stretch"
-                   VerticalContentAlignment="Stretch"/>
-                    </Border>
-                </Grid>
-            </TabItem>
+                                <ListBox x:Name="TicketsListBox"
+                 Grid.Row="2"
+                 DisplayMemberPath="Title"
+                 HorizontalContentAlignment="Stretch"
+                 BorderThickness="0"
+                 SelectionChanged="TicketsListBox_SelectionChanged"
+                 AutomationProperties.Name="Support tickets"/>
+
+                                <TextBlock x:Name="TicketListMessage"
+                   Grid.Row="3"
+                   Foreground="#475569"
+                   TextWrapping="Wrap"
+                   Margin="0,12,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Column="2"
+        Background="White"
+        CornerRadius="12"
+        Padding="16">
+
+                            <Frame x:Name="DetailsFrame"
+           NavigationUIVisibility="Hidden"
+           HorizontalContentAlignment="Stretch"
+           VerticalContentAlignment="Stretch"/>
+                        </Border>
+                    </Grid>
+                </TabItem>
 
         </TabControl>
     </Grid>

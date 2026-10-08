@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:SupportIssue.Presentation.Views"
       mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="450">
+      >
 
 
 
@@ -130,12 +130,13 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="{Binding Title}" Margin="4" />
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="{Binding Title}" 
+                      Foreground="#0F172A"
+                       FontSize="22"
+                       FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       Margin="4" />
             <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="4" />
             <TextBlock Text="{Binding CustomerName}" Margin="4" />
             <TextBlock Text="{Binding Status}" Margin="4" />
@@ -146,27 +147,33 @@
             <Button Command="{Binding CloseTicketCommand}" Style="{StaticResource RegisterButtonStyle}">
                 Stäng ärende
             </Button>
-        </StackPanel>
-        <StackPanel Grid.Column="0" Grid.Row="1">
-            <TextBlock Text="Rubrik" Margin="4" Style="{StaticResource FieldLabel}" />
+            <TextBlock Text="Rubrik" Style="{StaticResource FieldLabel}" />
             <TextBox x:Name="UpdateTitleTextBox"
-                     Text="{Binding UpdateTitleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="4" />
+                     Text="{Binding UpdateTitleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     MinHeight="60" 
+                     MaxHeight="120"
+                     VerticalScrollBarVisibility="Auto"
+                     Margin="4" />
             <Button x:Name="UpdateTitleButton" Command="{Binding UpdateTitleCommand}" Style="{StaticResource RegisterButtonStyle}">
                 Uppdatera rubrik
             </Button>
 
-            <TextBlock Text="Beskrivning" Margin="4" />
+            <TextBlock Text="Beskrivning" Style="{StaticResource FieldLabel}" />
             <TextBox x:Name="UpdateDescriptionTextBox"
                      Text="{Binding UpdateDescriptionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" MaxHeight="120"
-                     VerticalScrollBarVisibility="Auto" Margin="4" />
+                     AcceptsReturn="True" 
+                     TextWrapping="Wrap" 
+                     MinHeight="60" 
+                     MaxHeight="120"
+                     VerticalScrollBarVisibility="Auto" 
+                     Margin="4" />
             <Button x:Name="UpdateDescriptionButton" Command="{Binding UpdateDescriptionCommand}"  Style="{StaticResource RegisterButtonStyle}">
                 Uppdatera beskrivning
             </Button>
         </StackPanel>
         <StackPanel Grid.Column="1">
             <TextBlock Text="Kommentarer" FontWeight="Bold" Margin="4" />
-            <ListView x:Name="CommentsListView" ItemsSource="{Binding Comments}">
+            <ListView x:Name="CommentsListView" ItemsSource="{Binding Comments}" ScrollViewer.CanContentScroll="True" Height="150">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel>
@@ -176,15 +183,20 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <TextBox x:Name="NewCommentTextBox" Text="{Binding NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="4" />
-        <Button Name="AddCommentButton"
-    Margin="2"
-    Command="{Binding AddCommentCommand}"
+        <TextBox x:Name="NewCommentTextBox" 
+                 Text="{Binding NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 AcceptsReturn="True" 
+                TextWrapping="Wrap" 
+                MinHeight="60" 
+                MaxHeight="120"
+                VerticalScrollBarVisibility="Auto" 
+                Margin="4" />
+            <Button Name="AddCommentButton"
+                Margin="2"
+                Command="{Binding AddCommentCommand}"
                 Style="{StaticResource RegisterButtonStyle}">
-            Lägg till kommentar
-        </Button>
-        </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="1">
+                Lägg till kommentar
+            </Button>
 
             <ComboBox
                     ItemsSource="{Binding Technicians}"
