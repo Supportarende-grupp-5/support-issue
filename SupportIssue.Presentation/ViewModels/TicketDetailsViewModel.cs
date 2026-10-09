@@ -28,10 +28,27 @@ public partial class TicketDetailsViewModel : ObservableObject
     }
 
     public TicketStatusOption Status =>
-        currentTicket?.Status ?? TicketStatusOption.New;
+    currentTicket?.Status ?? TicketStatusOption.New;
 
     public TicketPriorityOption Priority =>
         currentTicket?.Priority ?? TicketPriorityOption.Normal;
+
+    // Svenska texter som visas i gränssnittet
+    public string StatusText => Status switch
+    {
+        TicketStatusOption.New => "Nytt",
+        TicketStatusOption.InProgress => "Pågående",
+        TicketStatusOption.Resolved => "Löst",
+        _ => Status.ToString()
+    };
+
+    public string PriorityText => Priority switch
+    {
+        TicketPriorityOption.Low => "Låg",
+        TicketPriorityOption.Normal => "Normal",
+        TicketPriorityOption.High => "Hög",
+        _ => Priority.ToString()
+    };
 
     public string TechnicianName =>
         currentTicket?.TechnicianName ?? "Ej tilldelad";
@@ -46,7 +63,22 @@ public partial class TicketDetailsViewModel : ObservableObject
     public IReadOnlyList<TechnicianOption> Technicians { get; }
 
     public IReadOnlyList<TicketPriorityOption> PriorityOptions { get; }
-        = Enum.GetValues<TicketPriorityOption>();
+    = Enum.GetValues<TicketPriorityOption>();
+
+    public string GetPriorityText(TicketPriorityOption priority) => priority switch
+    {
+        TicketPriorityOption.Low => "Låg",
+        TicketPriorityOption.Normal => "Normal",
+        TicketPriorityOption.High => "Hög",
+        _ => priority.ToString()
+    };
+
+    public IReadOnlyList<PriorityDisplayOption> SwedishPriorityOptions { get; } =
+    [
+        new("Låg", TicketPriorityOption.Low),
+    new("Normal", TicketPriorityOption.Normal),
+    new("Hög", TicketPriorityOption.High)
+    ];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddCommentCommand))]
@@ -481,6 +513,8 @@ public partial class TicketDetailsViewModel : ObservableObject
         OnPropertyChanged(nameof(Description));
         OnPropertyChanged(nameof(Status));
         OnPropertyChanged(nameof(Priority));
+        OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(PriorityText));
         OnPropertyChanged(nameof(TechnicianName));
 
         if (resetEditing)
@@ -528,3 +562,6 @@ public partial class TicketDetailsViewModel : ObservableObject
         }
     }
 }
+public record PriorityDisplayOption(
+    string Text,
+    TicketPriorityOption Value);
