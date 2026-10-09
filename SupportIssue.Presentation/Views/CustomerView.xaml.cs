@@ -56,7 +56,7 @@ public partial class CustomerView : UserControl
         {
             MessageBox.Show(ex.Message);
         }
-       
+
     }
 
     private void CustomersDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

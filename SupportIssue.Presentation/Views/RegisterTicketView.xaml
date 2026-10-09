@@ -6,69 +6,6 @@
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch">
 
-    <UserControl.Resources>
-
-        <!-- Rubriker ovanför fälten -->
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#334155"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
-        </Style>
-
-        <!-- Textfält med rundade hörn -->
-        <Style TargetType="TextBox">
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Foreground" Value="#0F172A"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#CBD5E1"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="14,12"/>
-            <Setter Property="MinHeight" Value="46"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="InputBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10">
-
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="{TemplateBinding Padding}"/>
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocusWithin"
-                                     Value="True">
-                                <Setter TargetName="InputBorder"
-                                        Property="BorderBrush"
-                                        Value="#2563EB"/>
-                            </Trigger>
-
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="InputBorder"
-                                        Property="Opacity"
-                                        Value="0.6"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="ComboBox">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="MinHeight" Value="46"/>
-            <Setter Property="Padding" Value="12,8"/>
-           <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-<Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        </Style>
-
-        
-
-    </UserControl.Resources>
 
     <!-- Kortet fyller fliken utan en begränsad maxbredd -->
     <Border Background="White"
@@ -160,6 +97,7 @@
                                        Style="{StaticResource FieldLabel}"/>
 
                             <ComboBox x:Name="CustomerComboBox"
+                                      Style="{StaticResource ComboBoxStyle}"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Id"
                                       AutomationProperties.Name="Customer"
@@ -169,6 +107,7 @@
                                        Style="{StaticResource FieldLabel}"/>
 
                             <ComboBox x:Name="PriorityComboBox"
+                                      Style="{StaticResource ComboBoxStyle}"
                                       AutomationProperties.Name="Priority"
                                       Margin="0,0,0,24"/>
 
