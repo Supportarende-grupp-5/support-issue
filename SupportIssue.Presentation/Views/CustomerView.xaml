@@ -28,6 +28,7 @@
                           Margin="0,0,0,5"/>
 
                 <TextBox x:Name="NameTextBox"
+                         Style="{StaticResource TextBox}"
                          Height="32"
                          Margin="0,0,0,15"/>
 
@@ -36,6 +37,7 @@
                        FontWeight="SemiBold"
                        Margin="0,0,0,5"/>
                 <TextBox x:Name="EmailTextBox"
+                         Style="{StaticResource TextBox}"
                         Height="32"
                         Margin="0,0,0,15"/>
                 <StackPanel Orientation="Horizontal"
