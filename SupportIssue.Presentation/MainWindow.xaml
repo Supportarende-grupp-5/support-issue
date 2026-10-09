@@ -241,13 +241,7 @@
                    Foreground="#0B1F3A"
                    Margin="0,0,0,12"/>
 
-                                <Button x:Name="RefreshTicketsButton"
-                Grid.Row="1"
-                Content="Uppdatera ärenden"
-                Padding="12,8"
-                Margin="0,0,0,12"
-                Click="RefreshTicketsButton_Click"
-                Style="{StaticResource RegisterButtonStyle}"/>
+                                
 
                                 <ListBox x:Name="TicketsListBox"
                  Grid.Row="2"

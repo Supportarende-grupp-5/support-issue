@@ -11,6 +11,7 @@ public partial class RegisterTicketView : UserControl
 {
     private readonly ITicketService _ticketService;
     private bool _isSaving;
+    public event EventHandler? TicketRegistered;
 
     public RegisterTicketView(ITicketService ticketService)
     {
@@ -130,7 +131,9 @@ public partial class RegisterTicketView : UserControl
             PriorityComboBox.SelectedValue = TicketPriority.Normal;
 
             FeedbackTextBlock.Text =
-                $"Ärende registrerat successfully. ID: {ticket.Id}";
+                $"Ticket registered successfully. ID: {ticket.Id}";
+
+            TicketRegistered?.Invoke(this, EventArgs.Empty);
         }
         catch (ArgumentException ex)
         {
