@@ -21,12 +21,12 @@
 
             <!-- Rubrik -->
             <StackPanel Grid.Row="0" Margin="0,0,0,24">
-                <TextBlock Text="Register a ticket"
+                <TextBlock Text="Registrera ärende"
                            FontSize="26"
                            FontWeight="Bold"
                            Foreground="#0F172A"/>
 
-                <TextBlock Text="Describe the issue and select the customer."
+                <TextBlock Text="Beskriv ärendet och välj kund."
                            FontSize="14"
                            Foreground="#64748B"
                            TextWrapping="Wrap"
@@ -55,21 +55,21 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
-                                   Text="Title"
+                                   Text="Rubrik"
                                    Style="{StaticResource FieldLabel}"/>
 
                         <TextBox Grid.Row="1"
                                  x:Name="TitleTextBox"
-                                 AutomationProperties.Name="Title"
+                                 AutomationProperties.Name="Rubrik"
                                  Margin="0,0,0,22"/>
 
                         <TextBlock Grid.Row="2"
-                                   Text="Description"
+                                   Text="Beskrivning"
                                    Style="{StaticResource FieldLabel}"/>
 
                         <TextBox Grid.Row="3"
                                  x:Name="DescriptionTextBox"
-                                 AutomationProperties.Name="Description"
+                                 AutomationProperties.Name="Beskrivning"
                                  AcceptsReturn="True"
                                  TextWrapping="Wrap"
                                  VerticalContentAlignment="Top"
@@ -87,28 +87,28 @@
                             VerticalAlignment="Top">
 
                         <StackPanel>
-                            <TextBlock Text="Ticket details"
+                            <TextBlock Text="Ärendedetaljer"
                                        FontSize="17"
                                        FontWeight="SemiBold"
                                        Foreground="#0F172A"
                                        Margin="0,0,0,22"/>
 
-                            <TextBlock Text="Customer"
+                            <TextBlock Text="Kund"
                                        Style="{StaticResource FieldLabel}"/>
 
                             <ComboBox x:Name="CustomerComboBox"
                                       Style="{StaticResource ComboBoxStyle}"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Id"
-                                      AutomationProperties.Name="Customer"
+                                      AutomationProperties.Name="Kund"
                                       Margin="0,0,0,22"/>
 
-                            <TextBlock Text="Priority"
+                            <TextBlock Text="Prioritet"
                                        Style="{StaticResource FieldLabel}"/>
 
                             <ComboBox x:Name="PriorityComboBox"
                                       Style="{StaticResource ComboBoxStyle}"
-                                      AutomationProperties.Name="Priority"
+                                      AutomationProperties.Name="Prioritet"
                                       Margin="0,0,0,24"/>
 
                             <Border Background="#EFF6FF"
@@ -116,7 +116,7 @@
                                     Padding="14">
 
                                 <TextBlock
-                                    Text="An ID and creation date are assigned automatically. The initial status is New."
+                                    Text="Ett ID och ett skapandedatum tilldelas automatiskt. Ärendets startstatus är Nytt."
                                     Foreground="#1E40AF"
                                     FontSize="13"
                                     TextWrapping="Wrap"/>
@@ -150,7 +150,7 @@
 
                     <Button x:Name="RegisterButton"
                             Grid.Column="1"
-                            Content="Register ticket"
+                            Content="Registrera ärende"
                             Style="{StaticResource ButtonStyle}"
                             IsEnabled="False"
                             Click="RegisterButton_Click"/>
