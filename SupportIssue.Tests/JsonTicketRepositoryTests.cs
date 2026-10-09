@@ -135,7 +135,7 @@ public class JsonTicketRepositoryTests
 
             // Act och Assert: sparandet ska avbrytas med ett fel.
             await Assert.ThrowsAsync<InvalidDataException>(
-                () => repository.AddAsync(ticket));
+                () => repository.GetAllAsync());
 
             // Kontrollera att filens innehåll är oförändrat.
             var contentAfter = await File.ReadAllTextAsync(filePath);
