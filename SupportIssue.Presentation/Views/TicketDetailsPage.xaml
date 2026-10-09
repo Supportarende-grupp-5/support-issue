@@ -7,124 +7,6 @@
       mc:Ignorable="d"
       >
 
-
-
-    <UserControl.Resources>
-
-        <!-- Rubriker ovanför fälten -->
-        <Style x:Key="FieldLabel" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#334155"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
-        </Style>
-
-        <!-- Textfält med rundade hörn -->
-        <Style TargetType="TextBox">
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="Foreground" Value="#0F172A"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#CBD5E1"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="14,12"/>
-            <Setter Property="MinHeight" Value="46"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
-                        <Border x:Name="InputBorder"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10">
-
-                            <ScrollViewer x:Name="PART_ContentHost"
-                                          Margin="{TemplateBinding Padding}"/>
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsKeyboardFocusWithin"
-                                     Value="True">
-                                <Setter TargetName="InputBorder"
-                                        Property="BorderBrush"
-                                        Value="#2563EB"/>
-                            </Trigger>
-
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="InputBorder"
-                                        Property="Opacity"
-                                        Value="0.6"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="ComboBox">
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="MinHeight" Value="46"/>
-            <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-        <!-- Registreringsknappen -->
-        <Style x:Key="RegisterButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#2563EB"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="24,14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="10"/>
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="10"
-                                Padding="{TemplateBinding Padding}">
-
-                            <ContentPresenter
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                        </Border>
-
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder"
-                                        Property="Background"
-                                        Value="#1D4ED8"/>
-                            </Trigger>
-
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder"
-                                        Property="Background"
-                                        Value="#1E40AF"/>
-                            </Trigger>
-
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder"
-                                        Property="Background"
-                                        Value="#E2E8F0"/>
-                                <Setter Property="Foreground"
-                                        Value="#64748B"/>
-                                <Setter Property="Cursor" Value="Arrow"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-    </UserControl.Resources>
-
-
-
-
-
     <Grid IsEnabled="{Binding IsNotBusy}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -144,7 +26,7 @@
             <TextBlock Text="{Binding TechnicianName}" Margin="4" />
 
             <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Margin="4" />
-            <Button Command="{Binding CloseTicketCommand}" Style="{StaticResource RegisterButtonStyle}">
+            <Button Command="{Binding CloseTicketCommand}" Style="{StaticResource ButtonStyle}">
                 Stäng ärende
             </Button>
             <TextBlock Text="Rubrik" Style="{StaticResource FieldLabel}" />
@@ -154,7 +36,7 @@
                      MaxHeight="120"
                      VerticalScrollBarVisibility="Auto"
                      Margin="4" />
-            <Button x:Name="UpdateTitleButton" Command="{Binding UpdateTitleCommand}" Style="{StaticResource RegisterButtonStyle}">
+            <Button x:Name="UpdateTitleButton" Command="{Binding UpdateTitleCommand}" Style="{StaticResource ButtonStyle}">
                 Uppdatera rubrik
             </Button>
 
@@ -167,7 +49,7 @@
                      MaxHeight="120"
                      VerticalScrollBarVisibility="Auto" 
                      Margin="4" />
-            <Button x:Name="UpdateDescriptionButton" Command="{Binding UpdateDescriptionCommand}"  Style="{StaticResource RegisterButtonStyle}">
+            <Button x:Name="UpdateDescriptionButton" Command="{Binding UpdateDescriptionCommand}"  Style="{StaticResource ButtonStyle}">
                 Uppdatera beskrivning
             </Button>
         </StackPanel>
@@ -194,21 +76,23 @@
             <Button Name="AddCommentButton"
                 Margin="2"
                 Command="{Binding AddCommentCommand}"
-                Style="{StaticResource RegisterButtonStyle}">
+                Style="{StaticResource ButtonStyle}">
                 Lägg till kommentar
             </Button>
 
             <ComboBox
+                    Style="{StaticResource ComboBoxStyle}"
                     ItemsSource="{Binding Technicians}"
                     DisplayMemberPath="TechnicianName"
                     SelectedItem="{Binding SelectedTechnician, Mode=TwoWay}" />
-            <Button x:Name="AssignTechnicianButton" Command="{Binding AssignSelectedTechnicianCommand}" Style="{StaticResource RegisterButtonStyle}">
+            <Button x:Name="AssignTechnicianButton" Command="{Binding AssignSelectedTechnicianCommand}" Style="{StaticResource ButtonStyle}">
                 Tilldela handläggare
             </Button>
             <ComboBox
+                    Style="{StaticResource ComboBoxStyle}"
                     ItemsSource="{Binding PriorityOptions}"
                     SelectedItem="{Binding SelectedPriority, Mode=TwoWay}" />
-            <Button x:Name="AssignPriorityButton" Command="{Binding ChangePriorityCommand}" Style="{StaticResource RegisterButtonStyle}">
+            <Button x:Name="AssignPriorityButton" Command="{Binding ChangePriorityCommand}" Style="{StaticResource ButtonStyle}">
                 Tilldela prioritet
             </Button>
         </StackPanel>
