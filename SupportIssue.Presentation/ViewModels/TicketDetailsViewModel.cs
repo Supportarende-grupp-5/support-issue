@@ -6,12 +6,14 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using System.Windows.Automation;
 
 namespace SupportIssue.Presentation.ViewModels;
 
 public partial class TicketDetailsViewModel : ObservableObject
 {
     private TicketDetails? currentTicket;
+    public event EventHandler? TicketChanged;
 
     private readonly ITicketHandlingService ticketHandlingService;
     private readonly ICustomerRepository customerRepository;
@@ -457,6 +459,8 @@ public partial class TicketDetailsViewModel : ObservableObject
             await ticketHandlingService.GetTicketById(CurrentTicketId);
 
         UpdateDisplayedTicket();
+
+        TicketChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateDisplayedTicket(bool resetEditing = false)
