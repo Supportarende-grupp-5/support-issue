@@ -43,6 +43,8 @@
 
             <TextBox x:Name="UpdateTitleTextBox"
                      Text="{Binding UpdateTitleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource TextBox}"
+
                      MinHeight="60"
                      MaxHeight="120"
                      VerticalScrollBarVisibility="Auto"
@@ -59,6 +61,7 @@
 
             <TextBox x:Name="UpdateDescriptionTextBox"
                      Text="{Binding UpdateDescriptionText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource TextBox}"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
                      MinHeight="60"
@@ -98,6 +101,7 @@
 
             <TextBox x:Name="NewCommentTextBox"
                      Text="{Binding NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource TextBox}"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
                      MinHeight="60"
