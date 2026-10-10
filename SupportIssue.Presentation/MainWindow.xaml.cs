@@ -26,7 +26,9 @@ public partial class MainWindow : Window
         RegisterTicketView registerTicketView,
         ITicketHandlingRepository ticketRepository,
         ITicketHandlingService ticketHandlingService,
-        ICustomerRepository customerRepository)
+        ICustomerRepository customerRepository,
+        TicketsView ticketsView,
+        DashboardView dashboardView)
     {
         _ticketRepository = ticketRepository;
         _ticketService = ticketHandlingService;
@@ -37,6 +39,8 @@ public partial class MainWindow : Window
 
         CustomerContent.Content = new CustomerView(customerService);
         TicketContent.Content = registerTicketView;
+        TicketListContent.Content = ticketsView;
+        DashboardContent.Content = dashboardView;
 
         _registerView.TicketRegistered += TicketDataChanged;
         Loaded += MainWindow_Loaded;
