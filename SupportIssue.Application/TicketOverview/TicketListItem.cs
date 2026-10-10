@@ -13,6 +13,7 @@ namespace SupportIssue.Application.TicketOverview
         public TicketStatus Status { get; set; }
         public string StatusText { get; set; } = "";
         public TicketPriority Priority { get; set; }
+        public string PriorityText { get; set; } = "";
         public DateTime CreatedAt { get; set; }
     }
 }

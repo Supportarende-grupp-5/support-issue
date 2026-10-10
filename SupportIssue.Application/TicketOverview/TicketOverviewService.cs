@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SupportIssue.Application.Customers;
+﻿using SupportIssue.Application.Customers;
 using SupportIssue.Application.Interfaces;
 using SupportIssue.Domain.Customers;
 using SupportIssue.Domain.Entities;
@@ -89,7 +86,7 @@ namespace SupportIssue.Application.TicketOverview
                 }
             }
 
-            return "Unknown customer";
+            return "Okänd kund";
         }
 
         private bool MatchesSearch(SupportTicket ticket, string customerName, string searchText)
@@ -125,6 +122,7 @@ namespace SupportIssue.Application.TicketOverview
             item.Status = ticket.Status;
             item.StatusText = GetStatusText(ticket.Status);
             item.Priority = ticket.Priority;
+            item.PriorityText = GetPriorityText(ticket.Priority);
             item.CreatedAt = ticket.CreatedAt.LocalDateTime;
 
             return item;
@@ -135,13 +133,28 @@ namespace SupportIssue.Application.TicketOverview
             switch (status)
             {
                 case TicketStatus.New:
-                    return "New";
+                    return "Nytt";
                 case TicketStatus.InProgress:
-                    return "In progress";
+                    return "Pågående";
                 case TicketStatus.Resolved:
-                    return "Resolved";
+                    return "Löst";
                 default:
                     return status.ToString();
+            }
+        }
+
+        private string GetPriorityText(TicketPriority priority)
+        {
+            switch (priority)
+            {
+                case TicketPriority.Low:
+                    return "Låg";
+                case TicketPriority.Normal:
+                    return "Normal";
+                case TicketPriority.High:
+                    return "Hög";
+                default:
+                    return priority.ToString();
             }
         }
     }
