@@ -2,6 +2,7 @@
 Customer management - Fredrik
 Ticket registration - Devran	
 Ticket handling - Gustav
+Ticket overview and dashboard - Suleiiman
 
 # About our application
 SupportIssue is a support ticket management application built with C# and WPF.
@@ -38,6 +39,16 @@ tickets.json – Ticket data
 
 The file paths are configured in App.xaml.cs. If the files don't exist, the application starts with empty data.
 
+# Ticket overview and dashboard
+The **Sök ärenden** tab shows all tickets, newest first.
+- Search by ticket title or customer name. Upper/lower case does not matter.
+- Filter by status: Alla, Nytt, Pågående or Löst.
+- Search and filter can be used together. **Visa alla** resets both.
+
+The **Översikt** tab (dashboard) shows how many tickets have each status. The numbers are updated every time the tab is opened.
+
+The logic is in `TicketOverviewService` (Application layer). The screens only call the service, so the logic can be tested without the user interface.
+
 # Testing
 We used xUnit for automated testing. The tests cover ticket validation, JSON storage and communication between different parts of the application.
 
@@ -48,6 +59,8 @@ We also tested the application manually by creating and updating customers, regi
 
 We worked in separate Git branches and merged our changes through GitHub. During the merge, we ran into a few conflicts, mainly because some code had been duplicated. We went through the conflicts together, removed the duplicates and made sure the application still worked afterwards.
 After merging, we built the solution and ran all tests successfully.
+
+The ticket overview is tested in `TicketOverviewServiceTests` with in-memory fake repositories (case-insensitive search, status filter, search + filter together, and status counts).
 
 # Requirements checklist
 
@@ -61,6 +74,8 @@ WPF interface and navigation ✓
 Automated tests ✓
 Manual testing ✓
 Final UI styling ✓
+Ticket search and status filter ✓
+Dashboard with ticket count per status ✓
 
 # AI-usage
 We used ChatGPT during development to help us understand some programming concepts and find possible solutions when we got stuck. For example, we used it to better understand dependency injection, interfaces, DDD and how the different layers of the application work together. It was also useful for explaining error messages and discussing ways to improve our code. 
