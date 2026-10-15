@@ -22,16 +22,18 @@
 
             <TextBlock Text="{Binding Description}"
                        TextWrapping="Wrap"
-                       Margin="4" />
+                       Margin="4" 
+                       Foreground="#0F172A"/>
 
-            <TextBlock Text="{Binding CustomerName}" Margin="4" />
-            <TextBlock Text="{Binding StatusText}" Margin="4" />
-            <TextBlock Text="{Binding PriorityText}" Margin="4" />
-            <TextBlock Text="{Binding TechnicianName}" Margin="4" />
+            <TextBlock Text="{Binding CustomerName}" Margin="4" Foreground="#0F172A" />
+            <TextBlock Text="{Binding StatusText}" Margin="4" Foreground="#0F172A"/>
+            <TextBlock Text="{Binding PriorityText}" Margin="4" Foreground="#0F172A"/>
+            <TextBlock Text="{Binding TechnicianName}" Margin="4" Foreground="#0F172A"/>
 
             <TextBlock Text="{Binding StatusMessage}"
                        TextWrapping="Wrap"
-                       Margin="4" />
+                       Margin="4" 
+                       Foreground="#0F172A"/>
 
             <Button Command="{Binding CloseTicketCommand}"
                     Style="{StaticResource ButtonStyle}">
