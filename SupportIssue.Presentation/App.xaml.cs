@@ -7,6 +7,7 @@ using SupportIssue.Application.TicketHandling;
 using SupportIssue.Infrastructure.Customers;
 using SupportIssue.Infrastructure.Repositories;
 using SupportIssue.Presentation.Views;
+using SupportIssue.Application.TicketOverview;
 
 namespace SupportIssue.Presentation;
 
@@ -43,6 +44,11 @@ public partial class App : System.Windows.Application
         // Registreringsvyn.
         services.AddTransient<RegisterTicketView>();
 
+        // Ärendeöversikt och dashboard (del 4).
+        services.AddSingleton<TicketOverviewService>();
+        services.AddTransient<TicketsView>();
+        services.AddTransient<DashboardView>();
+
         _serviceProvider = services.BuildServiceProvider();
     /// <summary>
     /// Interaction logic for App.xaml
@@ -68,12 +74,20 @@ public partial class App : System.Windows.Application
         var customerRepository =
             _serviceProvider.GetRequiredService<ICustomerRepository>();
 
+        var ticketsView =
+            _serviceProvider.GetRequiredService<TicketsView>();
+
+        var dashboardView =
+            _serviceProvider.GetRequiredService<DashboardView>();
+
         var mainWindow = new MainWindow(
             customerService,
             registerTicketView,
             ticketRepository,
             ticketHandlingService,
-            customerRepository);
+            customerRepository,
+            ticketsView,
+            dashboardView);
 
         MainWindow = mainWindow;
         mainWindow.Show();
