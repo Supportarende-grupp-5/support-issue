@@ -63,4 +63,4 @@ Manual testing ✓
 Final UI styling ✓
 
 # AI-usage
-We used ChatGPT during development to help us understand some programming concepts and find possible solutions when we got stuck. For example, we used it to better understand dependency injection, interfaces, DDD and how the different layers of the application work together. It was also useful for explaining error messages and discussing ways to improve our code. 
+We used ChatGPT during development to help us understand some programming concepts and find possible solutions when we got stuck. For example, we used it to better understand dependency injection, interfaces, DDD and how the different layers of the application work together. It was also useful for explaining error messages and discussing ways to improve our code. The initial unit tests required for the assignment were witten manually by our team. We later used Claude AI to generate additional unit tests to improve test coverage and test more scenarios. 
